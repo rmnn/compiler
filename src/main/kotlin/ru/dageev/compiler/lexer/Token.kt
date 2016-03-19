@@ -1,4 +1,4 @@
-package ru.ageevd.compiler.lexer
+package ru.dageev.compiler.lexer
 
 /**
  * Created by dageev

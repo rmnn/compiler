@@ -1,4 +1,4 @@
-group 'ru.ageevd.compiler'
+group 'ru.dageev.compiler'
 version '1.0-SNAPSHOT'
 
 buildscript {
