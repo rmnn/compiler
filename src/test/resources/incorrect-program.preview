@@ -1,0 +1,16 @@
+void power () {
+    int k, n;
+    read (k);
+    read (n );
+    r = 1;
+    while (!k) {
+        if (k % 2 == 1) {
+            r = r * n
+        } else {
+            skip
+        }
+        n = n*n ;
+        k = k/2
+    };
+    write(r)
+}
