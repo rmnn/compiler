@@ -155,13 +155,12 @@ class Lexer(val reader: Reader) {
     private fun isLetter() = isLetterFunction().invoke()
 
     private fun readToken(tokenType: TokenType, expr: () -> Boolean): Token {
-        val builder = StringBuilder()
-        while (expr.invoke()) {
-            builder.append(currChar)
-            nextChar()
+        val value = buildString {
+            while (expr.invoke()) {
+                append(currChar)
+                nextChar()
+            }
         }
-
-        val value = builder.toString()
         val foundKeyWork = TokenType.values().filter { it.operationType == OperationType.KEYWORD }.find { it.string == value }
         return if (foundKeyWork != null) {
             return token(tokenType = foundKeyWork, value = value)
