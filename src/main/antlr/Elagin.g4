@@ -1,11 +1,14 @@
 grammar Elagin;
 
+@header {
+   package ru.dageev.compiler.grammar;
+}
+
 compilationUnit : classDeclaration EOF;
 
 accessModifier
     :   'public'
     |   'private'
-    |   'abstract'
     ;
 
 classDeclaration
@@ -13,33 +16,22 @@ classDeclaration
     ;
 
 classBody
-    :   '{' classBodyDeclaration* '}'
-    ;
-
-classBodyDeclaration
-    :   accessModifier* memberDeclaration
-    |   ';'
-    ;
-
-memberDeclaration
-    :   methodDeclaration
-    |   fieldDeclaration
-    |   constructorDeclaration
+    :   '{' fieldDeclaration* methodDeclaration* constructorDeclaration*   '}'
     ;
 
 methodDeclaration
-    :   (type)? Identifier formalParameters
+    :   (accessModifier)? (type)? Identifier formalParameters
         (   methodBody
         |   ';'
         )
     ;
 
 constructorDeclaration
-    :   Identifier formalParameters constructorBody
+    :   (accessModifier)? 'constructor' formalParameters constructorBody
     ;
 
 fieldDeclaration
-    :   type variableDeclarators ';'
+    :   (accessModifier)? type variableDeclarators ';'
     ;
 
 variableDeclarators
