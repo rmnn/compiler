@@ -6,4 +6,4 @@ import ru.dageev.compiler.domain.type.Type
  * Created by dageev
  *  on 15-May-16.
  */
-class Parameter(val name: String, type: Type) : Expression(type)
+data class Parameter(val name: String, val type: Type)

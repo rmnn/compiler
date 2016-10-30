@@ -18,9 +18,23 @@ fun getType(typeContext: ElaginParser.TypeContext?): Type {
 
 }
 
+
+fun getTypeFromValue(value: ElaginParser.ValueContext): Type {
+    val stringValue = value.text
+    if (stringValue == null || stringValue.isEmpty()) {
+        return PrimitiveType.VOID
+    }
+
+    if (value.BooleanLiteral() != null) {
+        return PrimitiveType.BOOLEAN
+    }
+    return PrimitiveType.INT
+
+}
+
 private fun getByName(text: String): Type {
     return if (primitiveType(text)) {
-        PrimitiveType.valueOf(text)
+        PrimitiveType.getByName(text)
     } else {
         ClassType(text)
     }

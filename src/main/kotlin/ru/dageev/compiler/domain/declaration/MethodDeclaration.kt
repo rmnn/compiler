@@ -11,4 +11,8 @@ import ru.dageev.compiler.domain.scope.MethodSignature
 sealed class MethodDeclaration(val accessModifier: AccessModifier, val methodSignature: MethodSignature, val statement: Statement) {
     class ConstructorDeclaration(accessModifier: AccessModifier, methodSignature: MethodSignature, statement: Statement) :
             MethodDeclaration(accessModifier, methodSignature, statement)
+
+    override fun toString(): String {
+        return "MethodDeclaration(accessModifier=$accessModifier, methodSignature=$methodSignature, statement=$statement)"
+    }
 }

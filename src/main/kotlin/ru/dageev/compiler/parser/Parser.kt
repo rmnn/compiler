@@ -15,17 +15,17 @@ import ru.dageev.compiler.parser.visitor.CompilationUnitVisitor
  */
 class Parser {
 
-    fun parse(path: String): CompilationUnit? {
+    fun parse(path: String): CompilationUnit {
         val charStream = ANTLRFileStream(path)
         return getCompilationUnit(charStream)
     }
 
-    fun parseCode(program: String): CompilationUnit? {
+    fun parseCode(program: String): CompilationUnit {
         val charStream = ANTLRInputStream(program)
         return getCompilationUnit(charStream)
     }
 
-    private fun getCompilationUnit(charStream: CharStream): CompilationUnit? {
+    private fun getCompilationUnit(charStream: CharStream): CompilationUnit {
         val parser = getElaginParser(charStream)
         parser.addErrorListener(ErrorListener())
         val compilationUnitVisitor = CompilationUnitVisitor()

@@ -7,4 +7,8 @@ import ru.dageev.compiler.domain.type.Type
  * Created by dageev
  *  on 14-May-16.
  */
-class MethodSignature(val name: String, val parameters: List<Parameter>, val returnType: Type)
+class MethodSignature(val name: String, val parameters: List<Parameter>, val returnType: Type) {
+    override fun toString(): String {
+        return "MethodSignature(name='$name', parameters=$parameters, returnType=$returnType)"
+    }
+}

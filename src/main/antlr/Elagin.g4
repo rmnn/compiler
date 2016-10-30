@@ -25,7 +25,7 @@ classBody
     ;
 
 methodDeclaration
-    :   (accessModifier)? Identifier formalParameters ':' (type)?
+    :   (accessModifier)? Identifier formalParameters (':' type)?
         (   methodBody
         |   ';'
         )
@@ -87,12 +87,10 @@ statement : block
            | expression ;
 
 localVariableDeclarationStatement
-    :    localVariableDeclaration (',' localVariableDeclaration)* ':' type ';'
+    :  Identifier ':' type '=' expression ';'
     ;
 
-localVariableDeclaration
-    :   Identifier '=' expression
-    ;
+
 
 assignment
     :   Identifier '=' expression ';'
@@ -123,25 +121,17 @@ read
     ;
 
 expression
-    :   primary
-    |   expression '.' Identifier
-    |   expression '(' expressionList? ')'
-    |   'new' creator
-    |   expression ('*'|'/'| '%') expression
-    |   expression ('+'|'-') expression
-    |   expression ('<'|'>'|'>='|'<=') expression
-    |   expression ('!='|'==') expression
-    |   expression ('&&'|'||') expression
+    :   Identifier #variableReference
+    |   value #valueExpr
+    |   classRef=expression '.' Identifier '(' expressionList? ')' #methodCall
+    |   Identifier '(' expressionList? ')' #methodCall
+    |   'new' Identifier arguments #constructorCall
+    |   expression ('*'|'/'| '%') expression #multDivExpression
+    |   expression ('+'|'-') expression #sumExpression
+    |   expression ('<'|'>'|'>='|'<='|'!='|'==') expression #compareExpression
+    |   expression ('&&'|'||') expression #logicalExpression
     ;
 
-primary
-    :   literal
-    |   Identifier
-    ;
-
-creator
-    : Identifier arguments
-    ;
 
 arguments
     :   '(' expressionList? ')'
@@ -151,7 +141,7 @@ expressionList
     :   expression (',' expression)*
     ;
 
-literal
+value
     :   IntegerLiteral
     |   BooleanLiteral
     ;

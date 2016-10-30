@@ -14,5 +14,10 @@ enum class PrimitiveType(val primitiveTypeName: String) : Type {
         return primitiveTypeName
     }
 
+    companion object {
+        fun getByName(name: String): PrimitiveType {
+            return PrimitiveType.values().first { it.primitiveTypeName == name }
+        }
+    }
 
 }

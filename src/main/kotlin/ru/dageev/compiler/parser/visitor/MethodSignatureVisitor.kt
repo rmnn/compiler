@@ -13,7 +13,12 @@ import ru.dageev.compiler.parser.visitor.expression.function.ParameterListVisito
  * Created by dageev
  *  on 15-May-16.
  */
-class MethodSignatureVisitor(val scope: Scope) : ElaginBaseVisitor<MethodSignature>() {
+class MethodSignatureVisitor(scope: Scope) : ElaginBaseVisitor<MethodSignature>() {
+    val scope: Scope
+
+    init {
+        this.scope = scope.copy()
+    }
 
     override fun visitMethodDeclaration(ctx: ElaginParser.MethodDeclarationContext): MethodSignature {
         val functionName = ctx.Identifier().text
