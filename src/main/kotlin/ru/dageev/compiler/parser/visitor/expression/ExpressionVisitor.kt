@@ -9,4 +9,5 @@ import ru.dageev.compiler.grammar.ElaginBaseVisitor
  *  on 15-May-16.
  */
 class ExpressionVisitor(val scope: Scope) : ElaginBaseVisitor<Expression>() {
+
 }

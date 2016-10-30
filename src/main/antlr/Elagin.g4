@@ -4,7 +4,8 @@ grammar Elagin;
    package ru.dageev.compiler.grammar;
 }
 
-compilationUnit : classDeclaration EOF;
+compilationUnit : (classDeclaration)*
+    ;
 
 accessModifier
     :   'public'
@@ -12,7 +13,11 @@ accessModifier
     ;
 
 classDeclaration
-    :   Identifier classBody
+    :   'class' Identifier parentClassDeclaration? classBody
+    ;
+
+parentClassDeclaration
+    : ':' Identifier
     ;
 
 classBody
@@ -20,7 +25,7 @@ classBody
     ;
 
 methodDeclaration
-    :   (accessModifier)? (type)? Identifier formalParameters
+    :   (accessModifier)? Identifier formalParameters ':' (type)?
         (   methodBody
         |   ';'
         )
@@ -31,15 +36,7 @@ constructorDeclaration
     ;
 
 fieldDeclaration
-    :   (accessModifier)? type variableDeclarators ';'
-    ;
-
-variableDeclarators
-    :   variableDeclarator (',' variableDeclarator)*
-    ;
-
-variableDeclarator
-    :   Identifier ('=' expression)?
+    :   (accessModifier)? Identifier ':' type';'
     ;
 
 type
@@ -66,7 +63,7 @@ formalParameterList
     ;
 
 formalParameter
-    :   type Identifier
+    :  Identifier ':' type
     ;
 
 methodBody
@@ -90,11 +87,11 @@ statement : block
            | expression ;
 
 localVariableDeclarationStatement
-    :    localVariableDeclaration ';'
+    :    localVariableDeclaration (',' localVariableDeclaration)* ':' type ';'
     ;
 
 localVariableDeclaration
-    :    type variableDeclarators
+    :   Identifier '=' expression
     ;
 
 assignment
@@ -138,8 +135,7 @@ expression
     ;
 
 primary
-    :   '(' expression ')'
-    |   literal
+    :   literal
     |   Identifier
     ;
 

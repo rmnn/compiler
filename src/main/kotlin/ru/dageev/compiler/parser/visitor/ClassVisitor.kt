@@ -67,7 +67,7 @@ class ClassVisitor : ElaginBaseVisitor<ClassDeclaration>() {
     private fun processFields(ctx: ElaginParser.ClassDeclarationContext): List<VariableDeclaration.Field> {
         val fields = ctx.classBody().fieldDeclaration().map { field ->
             field.accept(FieldsVisitor(scope))
-        }.flatMap { it -> it }
+        }
 
         fields.forEach { scope.addField(it) }
         return fields

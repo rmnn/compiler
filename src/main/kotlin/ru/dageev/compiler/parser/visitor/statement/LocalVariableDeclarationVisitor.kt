@@ -13,8 +13,9 @@ import ru.dageev.compiler.parser.visitor.expression.ExpressionVisitor
  */
 class LocalVariableDeclarationVisitor(val expressionVisitor: ExpressionVisitor) : ElaginBaseVisitor<List<LocalVariable>>() {
     override fun visitLocalVariableDeclarationStatement(ctx: ElaginParser.LocalVariableDeclarationStatementContext): List<LocalVariable> {
-        val type = getType(ctx.localVariableDeclaration().type())
-        return ctx.localVariableDeclaration().variableDeclarators().variableDeclarator().map { variableDeclarator ->
+        val type = getType(ctx.type())
+
+        return ctx.localVariableDeclaration().map { variableDeclarator ->
             val name = variableDeclarator.Identifier().text
             val expression = variableDeclarator.expression().accept(expressionVisitor)
             VariableDeclaration.LocalVariable(name, type, expression)

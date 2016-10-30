@@ -8,9 +8,9 @@ import ru.dageev.compiler.domain.type.Type
  * Created by dageev
  *  on 14-May-16.
  */
-sealed class VariableDeclaration(val name: String, val type: Type, val expression: Expression) {
+sealed class VariableDeclaration(val name: String, val type: Type) {
 
-    class LocalVariable(name: String, type: Type, expression: Expression) : VariableDeclaration(name, type, expression)
+    class LocalVariable(name: String, type: Type, expression: Expression) : VariableDeclaration(name, type)
 
-    class Field(val accessModifier: AccessModifier, name: String, type: Type, expression: Expression) : VariableDeclaration(name, type, expression)
+    class Field(val accessModifier: AccessModifier, name: String, type: Type) : VariableDeclaration(name, type)
 }

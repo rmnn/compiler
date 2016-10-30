@@ -14,7 +14,9 @@ class CompilationUnitVisitor : ElaginBaseVisitor<CompilationUnit>() {
     override fun visitCompilationUnit(@NotNull ctx: ElaginParser.CompilationUnitContext): CompilationUnit {
         val classVisitor = ClassVisitor()
         val classDeclarationContext = ctx.classDeclaration()
-        val classDeclaration = classDeclarationContext.accept(classVisitor)
-        return CompilationUnit(classDeclaration)
+        val classes = classDeclarationContext.map { classDeclaration ->
+            classDeclaration.accept(classVisitor)
+        }
+        return CompilationUnit(classes)
     }
 }

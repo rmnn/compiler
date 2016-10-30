@@ -1,6 +1,8 @@
 package ru.dageev.compiler.parser
 
 import org.antlr.v4.runtime.ANTLRFileStream
+import org.antlr.v4.runtime.ANTLRInputStream
+import org.antlr.v4.runtime.CharStream
 import org.antlr.v4.runtime.CommonTokenStream
 import ru.dageev.compiler.domain.CompilationUnit
 import ru.dageev.compiler.grammar.ElaginLexer
@@ -14,14 +16,23 @@ import ru.dageev.compiler.parser.visitor.CompilationUnitVisitor
 class Parser {
 
     fun parse(path: String): CompilationUnit? {
-        val parser = getElaginParser(path)
+        val charStream = ANTLRFileStream(path)
+        return getCompilationUnit(charStream)
+    }
+
+    fun parseCode(program: String): CompilationUnit? {
+        val charStream = ANTLRInputStream(program)
+        return getCompilationUnit(charStream)
+    }
+
+    private fun getCompilationUnit(charStream: CharStream): CompilationUnit? {
+        val parser = getElaginParser(charStream)
         parser.addErrorListener(ErrorListener())
         val compilationUnitVisitor = CompilationUnitVisitor()
         return parser.compilationUnit().accept(compilationUnitVisitor)
     }
 
-    private fun getElaginParser(path: String): ElaginParser {
-        val charStream = ANTLRFileStream(path)
+    private fun getElaginParser(charStream: CharStream): ElaginParser {
         val lexer = ElaginLexer(charStream)
         val tokenStream = CommonTokenStream(lexer)
         val parser = ElaginParser(tokenStream)
