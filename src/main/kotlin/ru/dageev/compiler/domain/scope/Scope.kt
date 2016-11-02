@@ -1,5 +1,6 @@
 package ru.dageev.compiler.domain.scope
 
+import ru.dageev.compiler.domain.node.expression.Argument
 import ru.dageev.compiler.parser.matcher.MethodSignatureMatcher
 
 /**
@@ -29,10 +30,15 @@ data class Scope(val className: String,
         localVariables.put(variable.name, variable)
     }
 
+    fun getMethodCallSignature(name: String, arguments: List<Argument>): MethodSignature {
+        return methodSignatures.first { signature -> signatureMatcher.matches(signature, name, arguments) }
+    }
+
     private fun signatureExists(signature: MethodSignature): Boolean {
         return methodSignatures.any {
             signatureMatcher.matches(it, signature)
         }
     }
+
 
 }

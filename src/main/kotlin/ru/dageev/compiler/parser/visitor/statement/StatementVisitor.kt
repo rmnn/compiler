@@ -1,6 +1,7 @@
 package ru.dageev.compiler.parser.visitor.statement
 
 import org.antlr.v4.runtime.misc.NotNull
+import ru.dageev.compiler.domain.ClassesContext
 import ru.dageev.compiler.domain.node.statement.Statement
 import ru.dageev.compiler.domain.scope.Scope
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
@@ -11,14 +12,14 @@ import ru.dageev.compiler.parser.visitor.expression.ExpressionVisitor
  * Created by dageev
  *  on 15-May-16.
  */
-class StatementVisitor(scope: Scope) : ElaginBaseVisitor<Statement>() {
+class StatementVisitor(scope: Scope, val classesContext: ClassesContext) : ElaginBaseVisitor<Statement>() {
     val scope: Scope
 
     init {
         this.scope = scope.copy()
     }
 
-    val expressionVisitor = ExpressionVisitor(this.scope)
+    val expressionVisitor = ExpressionVisitor(this.scope, classesContext)
 
     override fun visitPrint(@NotNull ctx: ElaginParser.PrintContext): Statement {
         return PrintStatementVisitor(expressionVisitor).visitPrint(ctx)
@@ -37,23 +38,21 @@ class StatementVisitor(scope: Scope) : ElaginBaseVisitor<Statement>() {
     }
 
     override fun visitBlock(ctx: ElaginParser.BlockContext): Statement {
-        return BlockStatementVisitor(scope).visitBlock(ctx)
+        return BlockStatementVisitor(scope, classesContext).visitBlock(ctx)
     }
 
     override fun visitIfStatement(ctx: ElaginParser.IfStatementContext): Statement {
-        return IfStatementVisitor(scope).visitIfStatement(ctx)
+        return IfStatementVisitor(scope, classesContext).visitIfStatement(ctx)
     }
 
 
     override fun visitWhileStatement(ctx: ElaginParser.WhileStatementContext): Statement {
-        return WhileStatementVisitor(scope).visitWhileStatement(ctx)
+        return WhileStatementVisitor(scope, classesContext).visitWhileStatement(ctx)
     }
 
     override fun visitAssignment(ctx: ElaginParser.AssignmentContext): Statement {
         return AssignmentStatementVisitor(expressionVisitor).visitAssignment(ctx)
     }
-
-
 
 
 }

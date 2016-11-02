@@ -1,5 +1,6 @@
 package ru.dageev.compiler.parser.visitor.statement
 
+import ru.dageev.compiler.domain.ClassesContext
 import ru.dageev.compiler.domain.node.statement.IfStatement
 import ru.dageev.compiler.domain.scope.Scope
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
@@ -11,7 +12,7 @@ import java.util.*
  * Created by dageev
  * on 10/30/16.
  */
-class IfStatementVisitor(scope: Scope) : ElaginBaseVisitor<IfStatement>() {
+class IfStatementVisitor(scope: Scope, val classesContext: ClassesContext) : ElaginBaseVisitor<IfStatement>() {
     val scope: Scope
 
     init {
@@ -19,10 +20,10 @@ class IfStatementVisitor(scope: Scope) : ElaginBaseVisitor<IfStatement>() {
     }
 
     override fun visitIfStatement(ctx: ElaginParser.IfStatementContext): IfStatement {
-        val parExpression = ctx.parExpression().accept(ExpressionVisitor(scope))
-        val ifStatement = ctx.statement()[0].accept(StatementVisitor(scope))
+        val parExpression = ctx.parExpression().accept(ExpressionVisitor(scope, classesContext))
+        val ifStatement = ctx.statement()[0].accept(StatementVisitor(scope, classesContext))
         val elseStatement = if (ctx.statement().size > 1) {
-            Optional.of(ctx.statement()[1].accept(StatementVisitor(scope)))
+            Optional.of(ctx.statement()[1].accept(StatementVisitor(scope, classesContext)))
         } else {
             Optional.empty()
         }

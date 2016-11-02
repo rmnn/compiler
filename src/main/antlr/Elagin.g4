@@ -125,16 +125,11 @@ expression
     |   value #valueExpr
     |   classRef=expression '.' Identifier '(' expressionList? ')' #methodCall
     |   Identifier '(' expressionList? ')' #methodCall
-    |   'new' Identifier arguments #constructorCall
-    |   expression ('*'|'/'| '%') expression #multDivExpression
-    |   expression ('+'|'-') expression #sumExpression
-    |   expression ('<'|'>'|'>='|'<='|'!='|'==') expression #compareExpression
-    |   expression ('&&'|'||') expression #logicalExpression
-    ;
-
-
-arguments
-    :   '(' expressionList? ')'
+    |   'new' Identifier '(' expressionList? ')' #constructorCall
+    |   expression operation=('*'|'/'| '%') expression #multDivExpression
+    |   expression operation=('+'|'-') expression #sumExpression
+    |   expression operation=('<'|'>'|'>='|'<='|'!='|'==') expression #compareExpression
+    |   expression operation=('&&'|'||') expression #logicalExpression
     ;
 
 expressionList

@@ -30,7 +30,7 @@ class ClassVisitor(val classesContext: ClassesContext) : ElaginBaseVisitor<Class
         val parent = getParentClass(ctx)
         val fields = processFields(ctx)
         registerMethodSignatures(ctx)
-        val methods = ctx.classBody().methodDeclaration().map { method -> method.accept(MethodVisitor(scope.copy())) }
+        val methods = ctx.classBody().methodDeclaration().map { method -> method.accept(MethodVisitor(scope, classesContext)) }
         val constructors = processConstructors(ctx)
 
         return ClassDeclaration(className, fields, methods, constructors, parent)
@@ -55,7 +55,7 @@ class ClassVisitor(val classesContext: ClassesContext) : ElaginBaseVisitor<Class
         return if (ctx.classBody().constructorDeclaration().isEmpty()) {
             listOf(getDefaultConstructor())
         } else {
-            ctx.classBody().constructorDeclaration().map { constructor -> constructor.accept(ConstructorVisitor(scope)) }
+            ctx.classBody().constructorDeclaration().map { constructor -> constructor.accept(ConstructorVisitor(scope, classesContext)) }
         }
 
     }
@@ -65,7 +65,7 @@ class ClassVisitor(val classesContext: ClassesContext) : ElaginBaseVisitor<Class
     }
 
     private fun registerMethodSignatures(ctx: ElaginParser.ClassDeclarationContext) {
-        val methodSignatureVisitor = MethodSignatureVisitor(scope)
+        val methodSignatureVisitor = MethodSignatureVisitor(scope, classesContext)
 
         ctx.classBody().methodDeclaration().map { method -> method.accept(methodSignatureVisitor) }.forEach {
             scope.addSignature(it)

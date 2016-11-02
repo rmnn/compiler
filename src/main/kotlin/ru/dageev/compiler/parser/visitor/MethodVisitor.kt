@@ -1,5 +1,6 @@
 package ru.dageev.compiler.parser.visitor
 
+import ru.dageev.compiler.domain.ClassesContext
 import ru.dageev.compiler.domain.declaration.MethodDeclaration
 import ru.dageev.compiler.domain.scope.LocalVariable
 import ru.dageev.compiler.domain.scope.Scope
@@ -13,7 +14,7 @@ import ru.dageev.compiler.parser.visitor.statement.StatementVisitor
  * Created by dageev
  *  on 15-May-16.
  */
-class MethodVisitor(scope: Scope) : ElaginBaseVisitor<MethodDeclaration>() {
+class MethodVisitor(scope: Scope, val classesContext: ClassesContext) : ElaginBaseVisitor<MethodDeclaration>() {
     val scope: Scope
 
     init {
@@ -24,8 +25,8 @@ class MethodVisitor(scope: Scope) : ElaginBaseVisitor<MethodDeclaration>() {
         scope.addLocalVariable(LocalVariable("this", ClassType(scope.className)))
 
         val accessModifier = getAccessModifier(ctx.accessModifier())
-        val signature = ctx.accept(MethodSignatureVisitor(scope))
-        val block = ctx.accept(StatementVisitor(scope))
+        val signature = ctx.accept(MethodSignatureVisitor(scope, classesContext))
+        val block = ctx.accept(StatementVisitor(scope, classesContext))
 
         signature.parameters.forEach { param ->
             scope.addLocalVariable(LocalVariable(param.name, param.type))
