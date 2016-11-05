@@ -1,0 +1,5 @@
+class Boolka {
+    fun hello(): boolean {
+        return true;
+    }
+}

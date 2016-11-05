@@ -21,11 +21,11 @@ parentClassDeclaration
     ;
 
 classBody
-    :   '{' fieldDeclaration* methodDeclaration* constructorDeclaration*   '}'
+    :   '{' (fieldDeclaration | methodDeclaration | constructorDeclaration)*  '}'
     ;
 
 methodDeclaration
-    :   (accessModifier)? Identifier formalParameters (':' type)?
+    :   (accessModifier)? 'fun' Identifier formalParameters ':' type
         (   methodBody
         |   ';'
         )
@@ -93,7 +93,8 @@ localVariableDeclarationStatement
 
 
 assignment
-    :   Identifier '=' expression ';'
+    :   Identifier '=' assignmentExpr= expression ';'
+    |   classExpr=expression '.' Identifier '=' assignmentExpr=expression
     ;
 
 ifStatement
@@ -121,8 +122,10 @@ read
     ;
 
 expression
-    :   Identifier #variableReference
-    |   value #valueExpr
+    :   booleanLiteral #booleanValue
+    |   IntegerLiteral #integerValue
+    |   Identifier #variableReference
+    |   expression '.' Identifier #fieldAccessor
     |   classRef=expression '.' Identifier '(' expressionList? ')' #methodCall
     |   Identifier '(' expressionList? ')' #methodCall
     |   'new' Identifier '(' expressionList? ')' #constructorCall
@@ -132,19 +135,14 @@ expression
     |   expression operation=('&&'|'||') expression #logicalExpression
     ;
 
+
 expressionList
     :   expression (',' expression)*
     ;
 
-value
-    :   IntegerLiteral
-    |   BooleanLiteral
-    ;
+IntegerLiteral       : [+-]?('0'|[1-9][0-9]*) ;
 
-IntegerLiteral
-    :   '0'
-    |   NonZeroDigit (Digits?)
-    ;
+booleanLiteral : ('true' | 'false')   ;
 
 Identifier
     :   Letter (Letter | Digit)*
@@ -172,19 +170,6 @@ NonZeroDigit
     ;
 
 
-BooleanLiteral
-    :   'true'
-    |   'false'
-    ;
-
-
-WS  :  [ \t\r\n\u000C]+ -> skip
-    ;
-
-COMMENT
-    :   '/*' .*? '*/' -> skip
-    ;
-
-LINE_COMMENT
-    :   '//' ~[\r\n]* -> skip
-    ;
+WS  :  [ \t\r\n\u000C]+ -> skip ;
+COMMENT :   '/*' .*? '*/' -> skip  ;
+LINE_COMMENT :   '//' ~[\r\n]* -> skip ;

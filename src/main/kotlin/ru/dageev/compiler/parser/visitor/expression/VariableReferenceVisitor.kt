@@ -21,9 +21,12 @@ class VariableReferenceVisitor(scope: Scope) : ElaginBaseVisitor<VariableReferen
         return if (fieldExists(name)) {
             VariableReference.FieldReference(scope.fields[name]!!)
         } else {
-            // todo exception if local var not found
-            val variable = scope.localVariables[name]!!
-            return VariableReference.LocalVariableReference(variable)
+            val localVariable = scope.localVariables[name]
+            if (localVariable == null) {
+                throw RuntimeException("Local variable '$name' not found for class '${scope.className}'")
+            } else {
+                return VariableReference.LocalVariableReference(localVariable)
+            }
         }
     }
 

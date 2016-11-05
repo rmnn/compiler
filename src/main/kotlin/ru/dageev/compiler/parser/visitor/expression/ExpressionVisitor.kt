@@ -3,6 +3,7 @@ package ru.dageev.compiler.parser.visitor.expression
 import ru.dageev.compiler.domain.ClassesContext
 import ru.dageev.compiler.domain.node.expression.BinaryExpression
 import ru.dageev.compiler.domain.node.expression.Expression
+import ru.dageev.compiler.domain.node.expression.Value
 import ru.dageev.compiler.domain.scope.Scope
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
@@ -24,10 +25,15 @@ class ExpressionVisitor(scope: Scope, val classesContext: ClassesContext) : Elag
         return VariableReferenceVisitor(scope).visitVariableReference(ctx)
     }
 
-    override fun visitValue(ctx: ElaginParser.ValueContext): Expression {
-        return ValueExpressionVisitor().visitValue(ctx)
+
+    override fun visitBooleanValue(ctx: ElaginParser.BooleanValueContext): Value {
+        return ValueExpressionVisitor().visitBooleanValue(ctx)
+
     }
 
+    override fun visitIntegerValue(ctx: ElaginParser.IntegerValueContext): Value {
+        return ValueExpressionVisitor().visitIntegerValue(ctx);
+    }
 
     override fun visitMethodCall(ctx: ElaginParser.MethodCallContext): Expression {
         return MethodCallExpressionVisitor(scope, classesContext, this).visitMethodCall(ctx)
@@ -37,6 +43,10 @@ class ExpressionVisitor(scope: Scope, val classesContext: ClassesContext) : Elag
         return MethodCallExpressionVisitor(scope, classesContext, this).visitConstructorCall(ctx)
     }
 
+
+    override fun visitFieldAccessor(ctx: ElaginParser.FieldAccessorContext): Expression {
+        return FieldAccessExpressionVisitor(this).visitFieldAccessor(ctx)
+    }
 
     override fun visitMultDivExpression(ctx: ElaginParser.MultDivExpressionContext): BinaryExpression {
         return ctx.accept(binaryOperationVisitor)

@@ -29,7 +29,12 @@ class Parser {
         val parser = getElaginParser(charStream)
         parser.addErrorListener(ErrorListener())
         val compilationUnitVisitor = CompilationUnitVisitor()
-        return parser.compilationUnit().accept(compilationUnitVisitor)
+        val compilationUnit = parser.compilationUnit()
+        val errors = parser.numberOfSyntaxErrors
+        if (errors !== 0) {
+            throw RuntimeException("There are errors syntax errors")
+        }
+        return compilationUnit.accept(compilationUnitVisitor)
     }
 
     private fun getElaginParser(charStream: CharStream): ElaginParser {

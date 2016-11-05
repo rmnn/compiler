@@ -1,6 +1,5 @@
 package ru.dageev.compiler.parser
 
-import org.junit.Assert.assertFalse
 import org.junit.Test
 
 /**
@@ -13,17 +12,8 @@ class ParserTest {
     fun classesShouldParsedCorrectly() {
         val parser = Parser()
 
-        val code = """
-            class First {}
-            class Second : First {} """
-
-        val program = parser.parseCode(code)
-
-        assert(program.classDeclarations.size == 2)
-        assert(program.classDeclarations[0].name == "First")
-        assertFalse(program.classDeclarations[0].parentClassDeclaration.isPresent)
-        assert(program.classDeclarations[1].name == "Second")
-        assert(program.classDeclarations[1].parentClassDeclaration.get().name == "First")
+        val program = parser.parse("/home/dageev/workspace/compiler/src/test/resourcces/text.elg")
+        println(program)
     }
 
 }

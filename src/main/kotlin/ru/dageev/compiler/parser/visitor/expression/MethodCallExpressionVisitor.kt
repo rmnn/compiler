@@ -6,6 +6,7 @@ import ru.dageev.compiler.domain.node.expression.Call
 import ru.dageev.compiler.domain.node.expression.Expression
 import ru.dageev.compiler.domain.node.expression.VariableReference
 import ru.dageev.compiler.domain.scope.LocalVariable
+import ru.dageev.compiler.domain.scope.MethodSignature
 import ru.dageev.compiler.domain.scope.Scope
 import ru.dageev.compiler.domain.type.ClassType
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
@@ -31,8 +32,22 @@ class MethodCallExpressionVisitor(scope: Scope, val classesContext: ClassesConte
         val arguments = getArgumentsForCall(ctx.expressionList())
         val (owner, scope) = getOwnerAndScope(ctx)
 
-        val methodCallSignature = scope.getMethodCallSignature(functionName, arguments)
+        val methodCallSignature = getMethodSignature(scope.className, scope, functionName, arguments)
         return Call.MethodCall(methodCallSignature, functionName, arguments, owner)
+    }
+
+
+    fun getMethodSignature(childClass: String, scope: Scope, functionName: String, arguments: List<Argument>): MethodSignature {
+        return if (scope.methodCallSignatureExists(functionName, arguments)) {
+            scope.getMethodCallSignature(functionName, arguments)
+        } else {
+            if (scope.parentClassName != null) {
+                val parentScope = classesContext.getClassScope(scope.parentClassName)
+                getMethodSignature(childClass, parentScope, functionName, arguments)
+            } else {
+                throw RuntimeException("Method   $functionName${arguments.map { it.type.getTypeName() }}' not found for class ' $childClass'")
+            }
+        }
     }
 
     override fun visitConstructorCall(ctx: ElaginParser.ConstructorCallContext): Call {

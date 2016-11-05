@@ -7,7 +7,7 @@ import ru.dageev.compiler.parser.matcher.MethodSignatureMatcher
  * Created by dageev
  *  on 15-May-16.
  */
-data class Scope(val className: String,
+data class Scope(val className: String, val parentClassName: String?,
                  val methodSignatures: MutableList<MethodSignature> = mutableListOf(),
                  val localVariables: MutableMap<String, LocalVariable> = mutableMapOf(),
                  val fields: MutableMap<String, Field> = mutableMapOf()) {
@@ -31,8 +31,13 @@ data class Scope(val className: String,
     }
 
     fun getMethodCallSignature(name: String, arguments: List<Argument>): MethodSignature {
-        return methodSignatures.first { signature -> signatureMatcher.matches(signature, name, arguments) }
+        val signature = methodSignatures.find { signature -> signatureMatcher.matches(signature, name, arguments) }
+        return signature ?: throw RuntimeException("Method '$name${arguments.map { it.type.getTypeName() }}' not found for class '$className'")
     }
+
+
+    fun methodCallSignatureExists(name: String, arguments: List<Argument>): Boolean =
+            methodSignatures.find { signature -> signatureMatcher.matches(signature, name, arguments) } != null
 
     private fun signatureExists(signature: MethodSignature): Boolean {
         return methodSignatures.any {

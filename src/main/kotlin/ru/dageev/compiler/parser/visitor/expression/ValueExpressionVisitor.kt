@@ -1,9 +1,9 @@
 package ru.dageev.compiler.parser.visitor.expression
 
 import ru.dageev.compiler.domain.node.expression.Value
+import ru.dageev.compiler.domain.type.PrimitiveType
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
-import ru.dageev.compiler.parser.provider.getTypeFromValue
 
 /**
  * Created by dageev
@@ -11,9 +11,13 @@ import ru.dageev.compiler.parser.provider.getTypeFromValue
  */
 class ValueExpressionVisitor() : ElaginBaseVisitor<Value>() {
 
-    override fun visitValue(ctx: ElaginParser.ValueContext): Value {
+    override fun visitBooleanValue(ctx: ElaginParser.BooleanValueContext): Value {
         val value = ctx.text
-        val type = getTypeFromValue(ctx)
-        return Value(value, type)
+        return Value(value, PrimitiveType.BOOLEAN)
+    }
+
+    override fun visitIntegerValue(ctx: ElaginParser.IntegerValueContext): Value {
+        val value = ctx.text
+        return Value(value, PrimitiveType.INT)
     }
 }

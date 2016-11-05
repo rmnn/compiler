@@ -51,7 +51,7 @@ class StatementVisitor(scope: Scope, val classesContext: ClassesContext) : Elagi
     }
 
     override fun visitAssignment(ctx: ElaginParser.AssignmentContext): Statement {
-        return AssignmentStatementVisitor(expressionVisitor).visitAssignment(ctx)
+        return AssignmentStatementVisitor(scope, expressionVisitor).visitAssignment(ctx)
     }
 
 

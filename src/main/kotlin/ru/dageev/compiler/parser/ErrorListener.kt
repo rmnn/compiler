@@ -14,9 +14,9 @@ class ErrorListener : BaseErrorListener() {
         val LOGGER = LogManager.getLogger(ErrorListener::class.java)
     }
 
-    override fun syntaxError(recognizer: Recognizer<*, *>, offendingSymbol: Any, line: Int, charPositionInLine: Int, msg: String, e: RecognitionException) {
+    override fun syntaxError(recognizer: Recognizer<*, *>, offendingSymbol: Any, line: Int, charPositionInLine: Int, msg: String?, e: RecognitionException?) {
         val errorFormat = "You fucked up at line %d,char %d :(. Details:%n%s"
         val errorMsg = String.format(errorFormat, line, charPositionInLine, msg)
-        LOGGER.error(errorMsg)
+        println("$errorMsg")
     }
 }

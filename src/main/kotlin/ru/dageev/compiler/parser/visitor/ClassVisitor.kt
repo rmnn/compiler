@@ -24,10 +24,12 @@ class ClassVisitor(val classesContext: ClassesContext) : ElaginBaseVisitor<Class
 
     override fun visitClassDeclaration(@NotNull ctx: ElaginParser.ClassDeclarationContext): ClassDeclaration {
         val className = ctx.Identifier().text
-        scope = Scope(className)
 
 
         val parent = getParentClass(ctx)
+
+        scope = Scope(className, if (parent.isPresent) parent.get().name else null)
+
         val fields = processFields(ctx)
         registerMethodSignatures(ctx)
         val methods = ctx.classBody().methodDeclaration().map { method -> method.accept(MethodVisitor(scope, classesContext)) }
