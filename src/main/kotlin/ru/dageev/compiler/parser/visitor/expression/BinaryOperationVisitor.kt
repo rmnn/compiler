@@ -3,6 +3,7 @@ package ru.dageev.compiler.parser.visitor.expression
 import ru.dageev.compiler.domain.node.expression.BinaryExpression
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
+import ru.dageev.compiler.parser.CompilationException
 
 /**
  * Created by dageev
@@ -17,7 +18,7 @@ class BinaryOperationVisitor(val expressionVisitor: ExpressionVisitor) : ElaginB
             "*" -> BinaryExpression.MultiplicationExpression(left, right)
             "/" -> BinaryExpression.DivisionalExpression(left, right)
             "%" -> BinaryExpression.ModuleExpression(left, right)
-            else -> throw RuntimeException("Wrong operation")
+            else -> throw CompilationException("Wrong operation multiDiv operation ${ctx.operation.text}")
         }
     }
 
@@ -28,7 +29,7 @@ class BinaryOperationVisitor(val expressionVisitor: ExpressionVisitor) : ElaginB
         return when (ctx.operation.text) {
             "+" -> BinaryExpression.AdditionalExpression(left, right)
             "-" -> BinaryExpression.SubtractionExpression(left, right)
-            else -> throw RuntimeException("Wrong operation")
+            else -> throw CompilationException("Wrong operation ${ctx.operation.text}")
         }
     }
 
@@ -42,7 +43,7 @@ class BinaryOperationVisitor(val expressionVisitor: ExpressionVisitor) : ElaginB
             ">=" -> BinaryExpression.GreaterEqualsExpression(left, right)
             "==" -> BinaryExpression.EqualityExpression(left, right)
             "!=" -> BinaryExpression.NonEqualityExpression(left, right)
-            else -> throw RuntimeException("Wrong operation")
+            else -> throw CompilationException("Wrong operation ${ctx.operation.text}")
         }
     }
 
@@ -52,7 +53,7 @@ class BinaryOperationVisitor(val expressionVisitor: ExpressionVisitor) : ElaginB
         return when (ctx.operation.text) {
             "&&" -> BinaryExpression.LogicalAndExpression(left, right)
             "||" -> BinaryExpression.LogicalOrExpression(left, right)
-            else -> throw RuntimeException("Wrong operation")
+            else -> throw CompilationException("Wrong operation ${ctx.operation.text}")
         }
     }
 

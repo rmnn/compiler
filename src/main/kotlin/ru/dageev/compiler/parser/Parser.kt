@@ -32,7 +32,7 @@ class Parser {
         val compilationUnit = parser.compilationUnit()
         val errors = parser.numberOfSyntaxErrors
         if (errors !== 0) {
-            throw RuntimeException("There are errors syntax errors")
+            throw CompilationException("There are syntax errors")
         }
         return compilationUnit.accept(compilationUnitVisitor)
     }

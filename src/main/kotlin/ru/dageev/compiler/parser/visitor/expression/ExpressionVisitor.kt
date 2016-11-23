@@ -22,7 +22,7 @@ class ExpressionVisitor(scope: Scope, val classesContext: ClassesContext) : Elag
     }
 
     override fun visitVariableReference(ctx: ElaginParser.VariableReferenceContext): Expression {
-        return VariableReferenceVisitor(scope).visitVariableReference(ctx)
+        return VariableReferenceVisitor(scope, classesContext).visitVariableReference(ctx)
     }
 
 
@@ -45,7 +45,7 @@ class ExpressionVisitor(scope: Scope, val classesContext: ClassesContext) : Elag
 
 
     override fun visitFieldAccessor(ctx: ElaginParser.FieldAccessorContext): Expression {
-        return FieldAccessExpressionVisitor(this).visitFieldAccessor(ctx)
+        return FieldAccessExpressionVisitor(scope, classesContext, this).visitFieldAccessor(ctx)
     }
 
     override fun visitMultDivExpression(ctx: ElaginParser.MultDivExpressionContext): BinaryExpression {

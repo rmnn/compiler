@@ -34,7 +34,7 @@ class StatementVisitor(scope: Scope, val classesContext: ClassesContext) : Elagi
     }
 
     override fun visitLocalVariableDeclarationStatement(ctx: ElaginParser.LocalVariableDeclarationStatementContext): Statement {
-        return LocalVariableDeclarationVisitor(expressionVisitor).visitLocalVariableDeclarationStatement(ctx)
+        return LocalVariableDeclarationVisitor(classesContext, expressionVisitor).visitLocalVariableDeclarationStatement(ctx)
     }
 
     override fun visitBlock(ctx: ElaginParser.BlockContext): Statement {
@@ -51,7 +51,7 @@ class StatementVisitor(scope: Scope, val classesContext: ClassesContext) : Elagi
     }
 
     override fun visitAssignment(ctx: ElaginParser.AssignmentContext): Statement {
-        return AssignmentStatementVisitor(scope, expressionVisitor).visitAssignment(ctx)
+        return AssignmentStatementVisitor(scope, classesContext, expressionVisitor).visitAssignment(ctx)
     }
 
 

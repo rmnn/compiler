@@ -94,7 +94,7 @@ localVariableDeclarationStatement
 
 assignment
     :   Identifier '=' assignmentExpr= expression ';'
-    |   classExpr=expression '.' Identifier '=' assignmentExpr=expression
+    |   classExpr=expression '.' Identifier '=' assignmentExpr=expression ';'
     ;
 
 ifStatement

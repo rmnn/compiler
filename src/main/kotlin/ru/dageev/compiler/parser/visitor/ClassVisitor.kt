@@ -12,6 +12,7 @@ import ru.dageev.compiler.domain.scope.Scope
 import ru.dageev.compiler.domain.type.ClassType
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
+import ru.dageev.compiler.parser.CompilationException
 import java.util.*
 
 /**
@@ -27,7 +28,6 @@ class ClassVisitor(val classesContext: ClassesContext) : ElaginBaseVisitor<Class
 
 
         val parent = getParentClass(ctx)
-
         scope = Scope(className, if (parent.isPresent) parent.get().name else null)
 
         val fields = processFields(ctx)
@@ -43,13 +43,9 @@ class ClassVisitor(val classesContext: ClassesContext) : ElaginBaseVisitor<Class
         return if (parentClassDeclaration == null) {
             Optional.empty()
         } else {
-            val parentClass = classesContext.classes[parentClassDeclaration.Identifier().text]
-            if (parentClass == null) {
-                // TODO error handling
-                Optional.empty()
-            } else {
-                Optional.of(parentClass)
-            }
+            val classDeclaration = classesContext.classes[parentClassDeclaration.Identifier().text] ?:
+                    throw CompilationException("Parent class ${parentClassDeclaration.Identifier().text} not exists for ${ctx.Identifier().text}")
+            Optional.of(classDeclaration)
         }
     }
 
@@ -81,13 +77,13 @@ class ClassVisitor(val classesContext: ClassesContext) : ElaginBaseVisitor<Class
     }
 
     private fun getDefaultConstructorSignature(): MethodSignature {
-        return MethodSignature(scope.className, emptyList(), ClassType(scope.className))
+        return MethodSignature(AccessModifier.PUBLIC, scope.className, emptyList(), ClassType(scope.className))
     }
 
 
     private fun processFields(ctx: ElaginParser.ClassDeclarationContext): List<Field> {
         val fields = ctx.classBody().fieldDeclaration().map { field ->
-            field.accept(FieldsVisitor(scope))
+            field.accept(FieldsVisitor(classesContext, scope))
         }
 
         fields.forEach { scope.addField(it) }

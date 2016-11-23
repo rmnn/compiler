@@ -1,32 +1,38 @@
 package ru.dageev.compiler.parser.visitor.statement
 
+import ru.dageev.compiler.domain.ClassesContext
 import ru.dageev.compiler.domain.node.statement.Assignment
 import ru.dageev.compiler.domain.scope.Scope
 import ru.dageev.compiler.domain.type.ClassType
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
+import ru.dageev.compiler.parser.CompilationException
+import ru.dageev.compiler.parser.helper.assertCorrectVariableReference
 import ru.dageev.compiler.parser.visitor.expression.ExpressionVisitor
 
 /**
  * Created by dageev
  * on 10/30/16.
  */
-class AssignmentStatementVisitor(val scope: Scope, val expressionVisitor: ExpressionVisitor) : ElaginBaseVisitor<Assignment>() {
+class AssignmentStatementVisitor(val scope: Scope, val classesContext: ClassesContext, val expressionVisitor: ExpressionVisitor) : ElaginBaseVisitor<Assignment>() {
 
 
     override fun visitAssignment(ctx: ElaginParser.AssignmentContext): Assignment {
         val name = ctx.Identifier().text
         val expression = ctx.assignmentExpr.accept(expressionVisitor)
-
-        return if (ctx.classExpr != null) {
+        val classType = if (ctx.classExpr != null) {
             val expr = ctx.classExpr.accept(expressionVisitor)
-            return if (expr.type is ClassType) {
-                Assignment(expr.type, name, expression)
+            if (expr.type is ClassType) {
+                assertCorrectVariableReference(classesContext, scope, expr.type, name)
+                expr.type
             } else {
-                throw RuntimeException("Failed to ")
+                throw CompilationException("Unable to get field of primitive type for $name")
             }
         } else {
-            Assignment(ClassType(scope.className), name, expression)
+            scope.localVariables[name] ?: throw CompilationException("Field $name for ${scope.className} not exists")
+            ClassType(scope.className)
         }
+
+        return Assignment(classType, name, expression)
     }
 }

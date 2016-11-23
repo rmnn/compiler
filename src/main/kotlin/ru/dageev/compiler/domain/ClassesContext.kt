@@ -2,6 +2,7 @@ package ru.dageev.compiler.domain
 
 import ru.dageev.compiler.domain.declaration.ClassDeclaration
 import ru.dageev.compiler.domain.scope.Scope
+import ru.dageev.compiler.parser.CompilationException
 
 /**
  * Created by dageev
@@ -13,13 +14,9 @@ class ClassesContext(val classes: MutableMap<String, ClassDeclaration> = mutable
         classes.put(classDeclaration.name, classDeclaration)
     }
 
-    // TODO error handle
-    fun getClassDeclaration(name: String): ClassDeclaration {
-        return classes[name]!!
-    }
-
     fun getClassScope(name: String): Scope {
-        return toScope(classes[name]!!)
+        val classDeclaration = classes[name] ?: throw CompilationException("Class $name not found")
+        return toScope(classDeclaration)
     }
 
     fun toScope(classDecl: ClassDeclaration): Scope {

@@ -6,6 +6,7 @@ import ru.dageev.compiler.domain.scope.Scope
 import ru.dageev.compiler.domain.type.ClassType
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
+import ru.dageev.compiler.parser.provider.getAccessModifier
 import ru.dageev.compiler.parser.provider.getType
 import ru.dageev.compiler.parser.visitor.expression.ExpressionVisitor
 import ru.dageev.compiler.parser.visitor.expression.function.ParameterListVisitor
@@ -22,18 +23,20 @@ class MethodSignatureVisitor(scope: Scope, val classesContext: ClassesContext) :
     }
 
     override fun visitMethodDeclaration(ctx: ElaginParser.MethodDeclarationContext): MethodSignature {
+        val accessModifier = getAccessModifier(ctx.accessModifier())
         val functionName = ctx.Identifier().text
-        val returnType = getType(ctx.type())
-        val params = ctx.formalParameters().accept(ParameterListVisitor(ExpressionVisitor(scope, classesContext)))
+        val returnType = getType(classesContext, ctx.type())
+        val params = ctx.formalParameters().accept(ParameterListVisitor(classesContext, ExpressionVisitor(scope, classesContext)))
 
-        return MethodSignature(functionName, params, returnType)
+        return MethodSignature(accessModifier, functionName, params, returnType)
     }
 
     override fun visitConstructorDeclaration(ctx: ElaginParser.ConstructorDeclarationContext): MethodSignature {
+        val accessModifier = getAccessModifier(ctx.accessModifier())
         val functionName = scope.className
         val returnType = ClassType(scope.className)
-        val params = ctx.formalParameters().accept(ParameterListVisitor(ExpressionVisitor(scope, classesContext)))
+        val params = ctx.formalParameters().accept(ParameterListVisitor(classesContext, ExpressionVisitor(scope, classesContext)))
 
-        return MethodSignature(functionName, params, returnType)
+        return MethodSignature(accessModifier, functionName, params, returnType)
     }
 }

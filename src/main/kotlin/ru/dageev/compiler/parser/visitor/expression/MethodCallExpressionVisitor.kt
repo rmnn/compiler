@@ -1,5 +1,6 @@
 package ru.dageev.compiler.parser.visitor.expression
 
+import ru.dageev.compiler.domain.AccessModifier
 import ru.dageev.compiler.domain.ClassesContext
 import ru.dageev.compiler.domain.node.expression.Argument
 import ru.dageev.compiler.domain.node.expression.Call
@@ -11,6 +12,7 @@ import ru.dageev.compiler.domain.scope.Scope
 import ru.dageev.compiler.domain.type.ClassType
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
+import ru.dageev.compiler.parser.CompilationException
 
 /**
  * Created by dageev
@@ -39,13 +41,18 @@ class MethodCallExpressionVisitor(scope: Scope, val classesContext: ClassesConte
 
     fun getMethodSignature(childClass: String, scope: Scope, functionName: String, arguments: List<Argument>): MethodSignature {
         return if (scope.methodCallSignatureExists(functionName, arguments)) {
-            scope.getMethodCallSignature(functionName, arguments)
+            val methodCallSignature = scope.getMethodCallSignature(functionName, arguments)
+            if (scope.className != childClass && methodCallSignature.accessModifier == AccessModifier.PRIVATE) {
+                throw  CompilationException("Unable to call parent ${scope.className} class method ${functionName}")
+            }
+            methodCallSignature
+
         } else {
             if (scope.parentClassName != null) {
                 val parentScope = classesContext.getClassScope(scope.parentClassName)
                 getMethodSignature(childClass, parentScope, functionName, arguments)
             } else {
-                throw RuntimeException("Method   $functionName${arguments.map { it.type.getTypeName() }}' not found for class ' $childClass'")
+                throw CompilationException("Method $functionName${arguments.map { it.type.getTypeName() }}' not found for class ' $childClass'")
             }
         }
     }
@@ -59,8 +66,11 @@ class MethodCallExpressionVisitor(scope: Scope, val classesContext: ClassesConte
     private fun getOwnerAndScope(ctx: ElaginParser.MethodCallContext): Pair<Expression, Scope> {
         return if (ctx.classRef != null) {
             val classRefExpression = ctx.classRef.accept(expressionVisitor)
-            // todo error handling should be class type
-            classRefExpression to classesContext.getClassScope(classRefExpression.type.getTypeName())
+            if (classRefExpression.type is ClassType) {
+                classRefExpression to classesContext.getClassScope(classRefExpression.type.getTypeName())
+            } else {
+                throw CompilationException("Unable to call functions for primitive types")
+            }
         } else {
             val localVariable = LocalVariable("this", ClassType(scope.className))
             VariableReference.LocalVariableReference(localVariable) to scope
