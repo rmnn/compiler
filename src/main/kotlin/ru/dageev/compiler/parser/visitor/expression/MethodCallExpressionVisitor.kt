@@ -13,6 +13,7 @@ import ru.dageev.compiler.domain.type.ClassType
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
 import ru.dageev.compiler.parser.CompilationException
+import ru.dageev.compiler.parser.matcher.MethodSignatureMatcher
 
 /**
  * Created by dageev
@@ -60,6 +61,22 @@ class MethodCallExpressionVisitor(scope: Scope, val classesContext: ClassesConte
     override fun visitConstructorCall(ctx: ElaginParser.ConstructorCallContext): Call {
         val className = ctx.Identifier().text
         val arguments = getArgumentsForCall(ctx.expressionList())
+
+        val constructors = if (className == scope.className) scope.constructorSignatures
+        else {
+            val classDecl = classesContext.classes[className]
+            classDecl ?: throw CompilationException("Unable to create object of class '$className' due it doesn't exist ")
+            classesContext.getClassScope(className).constructorSignatures
+        }
+        val constructorExists = constructors
+                .filter { it.accessModifier == AccessModifier.PUBLIC || scope.className == className }
+                .any { constructor ->
+                    MethodSignatureMatcher().matches(constructor, className, arguments)
+                }
+        if (!constructorExists) {
+            throw CompilationException("Could not find matching constructor with arguments $arguments for $className")
+        }
+
         return Call.ConstructorCall(className, arguments)
     }
 

@@ -66,14 +66,15 @@ class ClassVisitor(val typeProvider: TypeProvider, val classesContext: ClassesCo
     private fun registerMethodSignatures(ctx: ElaginParser.ClassDeclarationContext) {
         val methodSignatureVisitor = MethodSignatureVisitor(scope, typeProvider, classesContext)
 
+        ctx.classBody().constructorDeclaration().map { constructor -> constructor.accept(methodSignatureVisitor) }.forEach {
+            scope.addConstructorSignature(it)
+        }
         ctx.classBody().methodDeclaration().map { method -> method.accept(methodSignatureVisitor) }.forEach {
             scope.addSignature(it)
         }
-        ctx.classBody().constructorDeclaration().map { constructor -> constructor.accept(methodSignatureVisitor) }.forEach {
-            scope.addSignature(it)
-        }
+
         if (ctx.classBody().constructorDeclaration().isEmpty()) {
-            scope.addSignature(getDefaultConstructorSignature())
+            scope.addConstructorSignature(getDefaultConstructorSignature())
         }
     }
 

@@ -10,6 +10,7 @@ import java.util.*
  *  on 15-May-16.
  */
 data class Scope(val className: String, val parentClassName: String?,
+                 val constructorSignatures: MutableList<MethodSignature> = mutableListOf(),
                  val methodSignatures: MutableList<MethodSignature> = mutableListOf(),
                  val localVariables: MutableMap<String, LocalVariable> = mutableMapOf(),
                  val fields: MutableMap<String, Field> = mutableMapOf()) {
@@ -31,6 +32,15 @@ data class Scope(val className: String, val parentClassName: String?,
         }
     }
 
+
+    fun addConstructorSignature(signature: MethodSignature) {
+        if (constructorSignatureExists(signature)) {
+            throw  CompilationException("Function signature '$signature' already exists for $className")
+        } else {
+            constructorSignatures.add(signature)
+        }
+    }
+
     fun addLocalVariable(variable: LocalVariable) {
         if (localVariables.containsKey(variable.name) && variable.name != "this") {
             throw  CompilationException("Local variable '${variable.name}' already exists in class '$className'")
@@ -43,15 +53,18 @@ data class Scope(val className: String, val parentClassName: String?,
     }
 
 
-
     fun fieldExists(name: String) = fields.containsKey(name)
 
-    private fun signatureExists(signature: MethodSignature): Boolean {
-        return methodSignatures.any {
+    private fun signatureExists(signature: MethodSignature): Boolean = signatureExists(signature, methodSignatures)
+
+    private fun constructorSignatureExists(signature: MethodSignature): Boolean = signatureExists(signature, constructorSignatures)
+
+    private fun signatureExists(signature: MethodSignature, signatures: List<MethodSignature>): Boolean {
+        return signatures.any {
             signatureMatcher.matches(it, signature)
         }
     }
 
-    fun copy(): Scope = Scope(className, parentClassName, ArrayList(methodSignatures), HashMap(localVariables), HashMap(fields))
+    fun copy(): Scope = Scope(className, parentClassName, ArrayList(constructorSignatures), ArrayList(methodSignatures), HashMap(localVariables), HashMap(fields))
 
 }

@@ -22,15 +22,15 @@ class VariableReferenceVisitor(scope: Scope, val classesContext: ClassesContext)
 
     override fun visitVariableReference(ctx: ElaginParser.VariableReferenceContext): VariableReference {
         val name = ctx.text
-        val field = getField(classesContext, scope, ClassType(scope.className), name)
-        return if (field.isPresent) {
-            VariableReference.FieldReference(field.get())
+        val localVariable = scope.localVariables[name]
+        return if (localVariable != null) {
+            VariableReference.LocalVariableReference(localVariable)
         } else {
-            val localVariable = scope.localVariables[name]
-            if (localVariable == null) {
-                throw CompilationException("Local variable '$name' not found for class '${scope.className}'")
+            val field = getField(classesContext, scope, ClassType(scope.className), name)
+            return if (field.isPresent) {
+                VariableReference.FieldReference(field.get())
             } else {
-                return VariableReference.LocalVariableReference(localVariable)
+                throw CompilationException("Local variable '$name' not found for class '${scope.className}'")
             }
         }
     }

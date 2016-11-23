@@ -6,13 +6,19 @@ import org.junit.Test
  * Created by dageev 
  * on 11/23/16.
  */
-class NegativeScenariosParserTest extends GroovyTestCase {
+class ParserTest extends GroovyTestCase {
 
     def parser = new Parser()
 
     @Test
+    void testShouldBeSuccessForAllLanguageIdioms() {
+        def source = this.getClass().getResource('/correctCode.elg').text
+        parser.parseCode(source)
+    }
+
+    @Test
     void testShouldFailForNotExistingClass() {
-        def source = " class First {  a: NOT_EXISTING_CLASS; }"
+        def source = " class First {  a: NOT_EXISTING_CLASS }"
         expectException(source, "Class NOT_EXISTING_CLASS not exists")
     }
 
@@ -197,6 +203,42 @@ class NegativeScenariosParserTest extends GroovyTestCase {
                     """
         expectException(source, "Variable 'a' could not have VOID type")
     }
+
+    @Test
+    void testShouldFailForIncorrectParametersTypeCall() {
+        def source = """
+        class First {
+            fun function(a: int):int { return a }  
+            fun function2() {  b: int = function(true) }    
+        }
+                    """
+        expectException(source, "Method 'function[boolean]' not found for class 'First'")
+    }
+
+    @Test
+    void testShouldFailIncorrectConstructorCall() {
+        def source = """
+        class First {
+            fun function() { a : First = new First(10) }  
+        }
+                    """
+        expectException(source, "Could not find matching constructor with arguments [int] for First")
+    }
+
+    @Test
+    void testShouldFailForCallParentPrivateConstructor() {
+        def source = """
+        class First {
+           private constructor() {}
+        }
+        
+        class Second { 
+            fun function() { a: First = new First() }
+        }
+                    """
+        expectException(source, "Could not find matching constructor with arguments [] for First")
+    }
+
 
     private void expectException(String source, String expectedMessage) {
         def message = shouldFail(CompilationException) {

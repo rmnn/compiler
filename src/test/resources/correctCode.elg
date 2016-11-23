@@ -1,0 +1,70 @@
+class First {
+    a : boolean
+    public b: int
+    private c: First
+
+    public constructor(a:boolean) {
+        this.a = a
+        b = 10
+    }
+
+    private constructor(in: int) {
+        b = in
+    }
+
+    fun fun1() : int {
+        d: int = 10
+        a = d
+        return a
+    }
+
+    public fun fun2() {
+        d: int = 10
+        read(d)
+        print(d)
+    }
+
+
+    private fun fun3() : First {
+        return new First(true)
+    }
+
+}
+
+class Second: First {
+
+    fun secondFun1() {
+        fun2()
+        return 10 + fun1() * secondFun2(-100) / 199 % 2
+    }
+
+    private fun secondFun2(a: int) : int {
+        return a + 10;
+    }
+
+
+    fun boolParse() {
+        res: boolean = true && false || false
+    }
+
+    fun whileFun() {
+        a: int = 10
+        while (a < 20) {
+            a = a + 1
+        }
+    }
+
+    fun ifFun(a: int) {
+        b: boolean = a % 2 == 1
+        if (b) {
+            print(b)
+        } else {
+            print(a)
+        }
+    }
+
+    fun classCreation() {
+        a: First = new First(false)
+        c: First = new Second()
+    }
+}
