@@ -5,12 +5,13 @@ import ru.dageev.compiler.domain.node.statement.Block
 import ru.dageev.compiler.domain.scope.Scope
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
+import ru.dageev.compiler.parser.provider.TypeProvider
 
 /**
  * Created by dageev
  * on 10/30/16.
  */
-class BlockStatementVisitor(scope: Scope, val classesContext: ClassesContext) : ElaginBaseVisitor<Block>() {
+class BlockStatementVisitor(scope: Scope, val typeProvider: TypeProvider, val classesContext: ClassesContext) : ElaginBaseVisitor<Block>() {
     val scope: Scope
 
     init {
@@ -18,7 +19,7 @@ class BlockStatementVisitor(scope: Scope, val classesContext: ClassesContext) : 
     }
 
     override fun visitBlock(ctx: ElaginParser.BlockContext): Block {
-        val statements = ctx.statement().map { it.accept(StatementVisitor(scope, classesContext)) }
+        val statements = ctx.statement().map { it.accept(StatementVisitor(scope, typeProvider, classesContext)) }
         return Block(scope, statements)
     }
 }

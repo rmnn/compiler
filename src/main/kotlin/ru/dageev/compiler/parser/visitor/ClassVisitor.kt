@@ -13,13 +13,14 @@ import ru.dageev.compiler.domain.type.ClassType
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
 import ru.dageev.compiler.parser.CompilationException
+import ru.dageev.compiler.parser.provider.TypeProvider
 import java.util.*
 
 /**
  * Created by dageev
  *  on 15-May-16.
  */
-class ClassVisitor(val classesContext: ClassesContext) : ElaginBaseVisitor<ClassDeclaration>() {
+class ClassVisitor(val typeProvider: TypeProvider, val classesContext: ClassesContext) : ElaginBaseVisitor<ClassDeclaration>() {
     lateinit var scope: Scope
 
 
@@ -32,7 +33,7 @@ class ClassVisitor(val classesContext: ClassesContext) : ElaginBaseVisitor<Class
 
         val fields = processFields(ctx)
         registerMethodSignatures(ctx)
-        val methods = ctx.classBody().methodDeclaration().map { method -> method.accept(MethodVisitor(scope, classesContext)) }
+        val methods = ctx.classBody().methodDeclaration().map { method -> method.accept(MethodVisitor(scope, typeProvider, classesContext)) }
         val constructors = processConstructors(ctx)
 
         return ClassDeclaration(className, fields, methods, constructors, parent)
@@ -53,7 +54,7 @@ class ClassVisitor(val classesContext: ClassesContext) : ElaginBaseVisitor<Class
         return if (ctx.classBody().constructorDeclaration().isEmpty()) {
             listOf(getDefaultConstructor())
         } else {
-            ctx.classBody().constructorDeclaration().map { constructor -> constructor.accept(ConstructorVisitor(scope, classesContext)) }
+            ctx.classBody().constructorDeclaration().map { constructor -> constructor.accept(ConstructorVisitor(scope, typeProvider, classesContext)) }
         }
 
     }
@@ -63,7 +64,7 @@ class ClassVisitor(val classesContext: ClassesContext) : ElaginBaseVisitor<Class
     }
 
     private fun registerMethodSignatures(ctx: ElaginParser.ClassDeclarationContext) {
-        val methodSignatureVisitor = MethodSignatureVisitor(scope, classesContext)
+        val methodSignatureVisitor = MethodSignatureVisitor(scope, typeProvider, classesContext)
 
         ctx.classBody().methodDeclaration().map { method -> method.accept(methodSignatureVisitor) }.forEach {
             scope.addSignature(it)
@@ -83,7 +84,7 @@ class ClassVisitor(val classesContext: ClassesContext) : ElaginBaseVisitor<Class
 
     private fun processFields(ctx: ElaginParser.ClassDeclarationContext): List<Field> {
         val fields = ctx.classBody().fieldDeclaration().map { field ->
-            field.accept(FieldsVisitor(classesContext, scope))
+            field.accept(FieldsVisitor(typeProvider, scope))
         }
 
         fields.forEach { scope.addField(it) }

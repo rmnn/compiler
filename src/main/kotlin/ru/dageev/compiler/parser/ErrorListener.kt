@@ -15,8 +15,6 @@ class ErrorListener : BaseErrorListener() {
     }
 
     override fun syntaxError(recognizer: Recognizer<*, *>, offendingSymbol: Any, line: Int, charPositionInLine: Int, msg: String?, e: RecognitionException?) {
-        val errorFormat = "You fucked up at line %d,char %d :(. Details:%n%s"
-        val errorMsg = String.format(errorFormat, line, charPositionInLine, msg)
-        println("$errorMsg")
+        throw  CompilationException("You failed at line $line,char $charPositionInLine :(. Details:\n$msg")
     }
 }

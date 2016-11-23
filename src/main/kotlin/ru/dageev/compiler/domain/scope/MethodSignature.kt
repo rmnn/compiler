@@ -10,6 +10,6 @@ import ru.dageev.compiler.domain.type.Type
  */
 class MethodSignature(val accessModifier: AccessModifier, val name: String, val parameters: List<Parameter>, val returnType: Type) {
     override fun toString(): String {
-        return "MethodSignature(accessModifier=$accessModifier, name='$name', parameters=$parameters, returnType=$returnType)"
+        return "${accessModifier.modifierName} $name(${parameters.map { it.type.getTypeName() }.joinToString()}): ${returnType.getTypeName()}"
     }
 }

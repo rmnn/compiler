@@ -1,5 +1,13 @@
-class Boolka {
-    fun hello(): boolean {
-        return true;
-    }
-}
+
+
+
+ClassDeclaration(name=Second, fields=[],
+
+ methods=[MethodDeclaration(accessModifier=PUBLIC,
+
+ methodSignature=public function(): void, statement=Block(statements=[null]))],
+ constructors=[MethodDeclaration(accessModifier=PUBLIC, methodSignature=public Second(): Second,
+ statement=Block(statements=[]))], parentClassDeclaration=Optional[ClassDeclaration(name=First, fields=[],
+ methods=[MethodDeclaration(accessModifier=PRIVATE, methodSignature=private privateFunction(): void, statement=Block(statements=[]))],
+ constructors=[MethodDeclaration(accessModifier=PUBLIC, methodSignature=public First(): First, statement=Block(statements=[]))],
+  parentClassDeclaration=Optional.empty)])])

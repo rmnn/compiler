@@ -40,19 +40,19 @@ class MethodCallExpressionVisitor(scope: Scope, val classesContext: ClassesConte
 
 
     fun getMethodSignature(childClass: String, scope: Scope, functionName: String, arguments: List<Argument>): MethodSignature {
-        return if (scope.methodCallSignatureExists(functionName, arguments)) {
-            val methodCallSignature = scope.getMethodCallSignature(functionName, arguments)
-            if (scope.className != childClass && methodCallSignature.accessModifier == AccessModifier.PRIVATE) {
-                throw  CompilationException("Unable to call parent ${scope.className} class method ${functionName}")
+        val methodCallSignature = scope.getMethodCallSignature(functionName, arguments)
+        return if (methodCallSignature.isPresent) {
+            if (scope.className != childClass && methodCallSignature.get().accessModifier == AccessModifier.PRIVATE) {
+                throw  CompilationException("Unable to call parent '${scope.className}' class private method '$functionName'")
             }
-            methodCallSignature
+            methodCallSignature.get()
 
         } else {
             if (scope.parentClassName != null) {
                 val parentScope = classesContext.getClassScope(scope.parentClassName)
                 getMethodSignature(childClass, parentScope, functionName, arguments)
             } else {
-                throw CompilationException("Method $functionName${arguments.map { it.type.getTypeName() }}' not found for class ' $childClass'")
+                throw CompilationException("Method '$functionName${arguments.map { it.type.getTypeName() }}' not found for class '$childClass'")
             }
         }
     }
@@ -69,7 +69,7 @@ class MethodCallExpressionVisitor(scope: Scope, val classesContext: ClassesConte
             if (classRefExpression.type is ClassType) {
                 classRefExpression to classesContext.getClassScope(classRefExpression.type.getTypeName())
             } else {
-                throw CompilationException("Unable to call functions for primitive types")
+                throw CompilationException("Unable to call methods for primitive types for")
             }
         } else {
             val localVariable = LocalVariable("this", ClassType(scope.className))

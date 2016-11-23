@@ -19,15 +19,14 @@ class ClassesContext(val classes: MutableMap<String, ClassDeclaration> = mutable
         return toScope(classDeclaration)
     }
 
-    fun toScope(classDecl: ClassDeclaration): Scope {
+    private fun toScope(classDecl: ClassDeclaration): Scope {
         val methods = classDecl.methods + classDecl.constructors
         return Scope(className = classDecl.name, parentClassName = getParentClassName(classDecl), fields = mutableMapOf(*classDecl.fields.map { it.name to it }.toTypedArray()),
                 methodSignatures = methods.map { it.methodSignature }.toMutableList())
     }
 
-    fun getParentClassName(classDecl: ClassDeclaration) = if (classDecl.parentClassDeclaration.isPresent) {
-        classDecl.parentClassDeclaration.get().name
-    } else {
-        null
-    }
+    private fun getParentClassName(classDecl: ClassDeclaration) =
+            if (classDecl.parentClassDeclaration.isPresent) classDecl.parentClassDeclaration.get().name
+            else null
+
 }

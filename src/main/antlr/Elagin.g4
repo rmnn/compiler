@@ -25,10 +25,7 @@ classBody
     ;
 
 methodDeclaration
-    :   (accessModifier)? 'fun' Identifier formalParameters ':' type
-        (   methodBody
-        |   ';'
-        )
+    :   (accessModifier)? 'fun' Identifier formalParameters (':' type)? methodBody
     ;
 
 constructorDeclaration
@@ -36,7 +33,7 @@ constructorDeclaration
     ;
 
 fieldDeclaration
-    :   (accessModifier)? Identifier ':' type';'
+    :   (accessModifier)? Identifier ':' type
     ;
 
 type
@@ -87,14 +84,14 @@ statement : block
            | expression ;
 
 localVariableDeclarationStatement
-    :  Identifier ':' type '=' expression ';'
+    :  Identifier ':' type '=' expression
     ;
 
 
 
 assignment
-    :   Identifier '=' assignmentExpr= expression ';'
-    |   classExpr=expression '.' Identifier '=' assignmentExpr=expression ';'
+    :   Identifier '=' assignmentExpr= expression
+    |   classExpr=expression '.' Identifier '=' assignmentExpr=expression
     ;
 
 ifStatement
@@ -106,7 +103,7 @@ whileStatement
     ;
 
 returnStatement
-    :   'return' expression? ';'
+    :   'return' expression?
     ;
 
 parExpression
@@ -114,11 +111,11 @@ parExpression
     ;
 
 print
-    : 'print' '(' expression ')' ';'
+    : 'print' '(' expression ')'
     ;
 
 read
-    :   'read' '(' Identifier ')' ';'
+    :   'read' '(' Identifier ')'
     ;
 
 expression

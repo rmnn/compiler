@@ -7,6 +7,7 @@ import ru.dageev.compiler.domain.scope.Scope
 import ru.dageev.compiler.domain.type.ClassType
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
+import ru.dageev.compiler.parser.provider.TypeProvider
 import ru.dageev.compiler.parser.provider.getAccessModifier
 import ru.dageev.compiler.parser.visitor.statement.StatementVisitor
 
@@ -14,7 +15,7 @@ import ru.dageev.compiler.parser.visitor.statement.StatementVisitor
  * Created by dageev
  *  on 15-May-16.
  */
-class MethodVisitor(scope: Scope, val classesContext: ClassesContext) : ElaginBaseVisitor<MethodDeclaration>() {
+class MethodVisitor(scope: Scope, val typeProvider: TypeProvider, val classesContext: ClassesContext) : ElaginBaseVisitor<MethodDeclaration>() {
     val scope: Scope
 
     init {
@@ -25,13 +26,13 @@ class MethodVisitor(scope: Scope, val classesContext: ClassesContext) : ElaginBa
         scope.addLocalVariable(LocalVariable("this", ClassType(scope.className)))
 
         val accessModifier = getAccessModifier(ctx.accessModifier())
-        val signature = ctx.accept(MethodSignatureVisitor(scope, classesContext))
-        val block = ctx.accept(StatementVisitor(scope, classesContext))
+        val signature = ctx.accept(MethodSignatureVisitor(scope, typeProvider, classesContext))
 
         signature.parameters.forEach { param ->
             scope.addLocalVariable(LocalVariable(param.name, param.type))
         }
 
+        val block = ctx.accept(StatementVisitor(scope, typeProvider, classesContext))
         return MethodDeclaration.ConstructorDeclaration(accessModifier, signature, block)
     }
 

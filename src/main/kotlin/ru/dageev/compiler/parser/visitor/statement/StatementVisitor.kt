@@ -6,18 +6,14 @@ import ru.dageev.compiler.domain.node.statement.Statement
 import ru.dageev.compiler.domain.scope.Scope
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
+import ru.dageev.compiler.parser.provider.TypeProvider
 import ru.dageev.compiler.parser.visitor.expression.ExpressionVisitor
 
 /**
  * Created by dageev
  *  on 15-May-16.
  */
-class StatementVisitor(scope: Scope, val classesContext: ClassesContext) : ElaginBaseVisitor<Statement>() {
-    val scope: Scope
-
-    init {
-        this.scope = scope.copy()
-    }
+class StatementVisitor(val scope: Scope, val typeProvider: TypeProvider, val classesContext: ClassesContext) : ElaginBaseVisitor<Statement>() {
 
     val expressionVisitor = ExpressionVisitor(this.scope, classesContext)
 
@@ -34,20 +30,20 @@ class StatementVisitor(scope: Scope, val classesContext: ClassesContext) : Elagi
     }
 
     override fun visitLocalVariableDeclarationStatement(ctx: ElaginParser.LocalVariableDeclarationStatementContext): Statement {
-        return LocalVariableDeclarationVisitor(classesContext, expressionVisitor).visitLocalVariableDeclarationStatement(ctx)
+        return LocalVariableDeclarationVisitor(scope, typeProvider, expressionVisitor).visitLocalVariableDeclarationStatement(ctx)
     }
 
     override fun visitBlock(ctx: ElaginParser.BlockContext): Statement {
-        return BlockStatementVisitor(scope, classesContext).visitBlock(ctx)
+        return BlockStatementVisitor(scope, typeProvider, classesContext).visitBlock(ctx)
     }
 
     override fun visitIfStatement(ctx: ElaginParser.IfStatementContext): Statement {
-        return IfStatementVisitor(scope, classesContext).visitIfStatement(ctx)
+        return IfStatementVisitor(scope, typeProvider, classesContext).visitIfStatement(ctx)
     }
 
 
     override fun visitWhileStatement(ctx: ElaginParser.WhileStatementContext): Statement {
-        return WhileStatementVisitor(scope, classesContext).visitWhileStatement(ctx)
+        return WhileStatementVisitor(scope, typeProvider, classesContext).visitWhileStatement(ctx)
     }
 
     override fun visitAssignment(ctx: ElaginParser.AssignmentContext): Statement {

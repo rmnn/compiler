@@ -7,6 +7,7 @@ import ru.dageev.compiler.domain.type.PrimitiveType
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
 import ru.dageev.compiler.parser.CompilationException
+import ru.dageev.compiler.parser.provider.TypeProvider
 import ru.dageev.compiler.parser.visitor.expression.ExpressionVisitor
 import java.util.*
 
@@ -14,7 +15,7 @@ import java.util.*
  * Created by dageev
  * on 10/30/16.
  */
-class IfStatementVisitor(scope: Scope, val classesContext: ClassesContext) : ElaginBaseVisitor<IfStatement>() {
+class IfStatementVisitor(scope: Scope, val typeProvider: TypeProvider, val classesContext: ClassesContext) : ElaginBaseVisitor<IfStatement>() {
     val scope: Scope
 
     init {
@@ -22,13 +23,13 @@ class IfStatementVisitor(scope: Scope, val classesContext: ClassesContext) : Ela
     }
 
     override fun visitIfStatement(ctx: ElaginParser.IfStatementContext): IfStatement {
-        val parExpression = ctx.parExpression().accept(ExpressionVisitor(scope, classesContext))
+        val parExpression = ctx.parExpression().expression().accept(ExpressionVisitor(scope, classesContext))
         if (parExpression.type != PrimitiveType.BOOLEAN) {
             throw CompilationException("Type ${parExpression.type} could not be used for condition")
         }
-        val ifStatement = ctx.statement()[0].accept(StatementVisitor(scope, classesContext))
+        val ifStatement = ctx.statement()[0].accept(StatementVisitor(scope, typeProvider, classesContext))
         val elseStatement = if (ctx.statement().size > 1) {
-            Optional.of(ctx.statement()[1].accept(StatementVisitor(scope, classesContext)))
+            Optional.of(ctx.statement()[1].accept(StatementVisitor(scope, typeProvider, classesContext)))
         } else {
             Optional.empty()
         }

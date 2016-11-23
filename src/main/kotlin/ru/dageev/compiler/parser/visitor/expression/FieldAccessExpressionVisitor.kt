@@ -13,7 +13,13 @@ import ru.dageev.compiler.parser.helper.assertCorrectVariableReference
  * Created by dageev
  * on 11/2/16.
  */
-class FieldAccessExpressionVisitor(val scope: Scope, val classesContext: ClassesContext, val expressionVisitor: ExpressionVisitor) : ElaginBaseVisitor<FieldAccess>() {
+class FieldAccessExpressionVisitor(scope: Scope, val classesContext: ClassesContext, val expressionVisitor: ExpressionVisitor) : ElaginBaseVisitor<FieldAccess>() {
+    val scope: Scope
+
+    init {
+        this.scope = scope.copy()
+    }
+
     override fun visitFieldAccessor(ctx: ElaginParser.FieldAccessorContext): FieldAccess {
         val name = ctx.Identifier().text
         val expression = ctx.expression().accept(expressionVisitor)
