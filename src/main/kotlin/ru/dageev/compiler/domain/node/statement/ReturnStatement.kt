@@ -1,5 +1,6 @@
 package ru.dageev.compiler.domain.node.statement
 
+import ru.dageev.compiler.bytecodegeneration.statement.StatementGenerator
 import ru.dageev.compiler.domain.node.expression.Expression
 
 /**
@@ -7,6 +8,11 @@ import ru.dageev.compiler.domain.node.expression.Expression
  *  on 15-May-16.
  */
 class ReturnStatement(val expression: Expression) : Statement {
+
+    override fun accept(generator: StatementGenerator) {
+        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun toString(): String {
         return "ReturnStatement(expression=$expression)"
     }

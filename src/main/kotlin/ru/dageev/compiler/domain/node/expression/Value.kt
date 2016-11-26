@@ -1,5 +1,7 @@
 package ru.dageev.compiler.domain.node.expression
 
+import ru.dageev.compiler.bytecodegeneration.expression.ExpressionGenerator
+import ru.dageev.compiler.bytecodegeneration.statement.StatementGenerator
 import ru.dageev.compiler.domain.type.Type
 
 /**
@@ -7,6 +9,14 @@ import ru.dageev.compiler.domain.type.Type
  *  on 15-May-16.
  */
 class Value(val value: String, type: Type) : Expression(type) {
+
+    override fun accept(generator: StatementGenerator) {
+        generator.generate(this)
+    }
+
+    override fun generate(generator: ExpressionGenerator) {
+        generator.generate(this)
+    }
     override fun toString(): String {
         return "Value(value='$value', type=$type)"
     }

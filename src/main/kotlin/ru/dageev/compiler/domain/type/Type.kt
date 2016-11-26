@@ -6,4 +6,6 @@ package ru.dageev.compiler.domain.type
  */
 interface Type {
     fun getTypeName(): String
+
+    fun getDescriptor(): String
 }

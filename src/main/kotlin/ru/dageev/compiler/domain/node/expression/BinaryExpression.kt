@@ -1,5 +1,7 @@
 package ru.dageev.compiler.domain.node.expression
 
+import ru.dageev.compiler.bytecodegeneration.expression.ExpressionGenerator
+import ru.dageev.compiler.bytecodegeneration.statement.StatementGenerator
 import ru.dageev.compiler.domain.type.PrimitiveType
 import ru.dageev.compiler.domain.type.Type
 
@@ -34,4 +36,13 @@ sealed class BinaryExpression(val leftExpression: Expression, val rightExpressio
     class NonEqualityExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN)
 
     class LessExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN)
+
+
+    override fun accept(generator: StatementGenerator) {
+        generator.generate(this)
+    }
+
+    override fun generate(generator: ExpressionGenerator) {
+        generator.generate(this)
+    }
 }

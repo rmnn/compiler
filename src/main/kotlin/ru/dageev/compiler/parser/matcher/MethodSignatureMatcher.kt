@@ -9,8 +9,8 @@ import ru.dageev.compiler.domain.type.Type
  *  on 15-May-16.
  */
 class MethodSignatureMatcher {
-    fun matches(methodSignature: MethodSignature, other: MethodSignature): Boolean {
-        return matchesByType(methodSignature, other.name, other.parameters.map { it.type })
+    fun matches(methodSignature: MethodSignature, other: MethodSignature, includeAccessModifier: Boolean = false): Boolean {
+        return matchesByType(methodSignature, other.name, other.parameters.map { it.type }) && (!includeAccessModifier || methodSignature.accessModifier == other.accessModifier)
     }
 
     fun matches(methodSignature: MethodSignature, name: String, parameters: List<Argument>): Boolean {

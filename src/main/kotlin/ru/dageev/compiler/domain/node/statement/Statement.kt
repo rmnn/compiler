@@ -1,5 +1,6 @@
 package ru.dageev.compiler.domain.node.statement
 
+import ru.dageev.compiler.bytecodegeneration.statement.StatementGenerator
 import ru.dageev.compiler.domain.node.Node
 
 /**
@@ -7,4 +8,7 @@ import ru.dageev.compiler.domain.node.Node
  *  on 14-May-16.
  */
 interface Statement : Node {
+
+    fun accept(generator: StatementGenerator)
+
 }

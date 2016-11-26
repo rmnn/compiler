@@ -3,8 +3,10 @@ package ru.dageev.compiler.parser.helper
 import ru.dageev.compiler.domain.AccessModifier
 import ru.dageev.compiler.domain.ClassesContext
 import ru.dageev.compiler.domain.scope.Field
+import ru.dageev.compiler.domain.scope.MethodSignature
 import ru.dageev.compiler.domain.scope.Scope
 import ru.dageev.compiler.domain.type.ClassType
+import ru.dageev.compiler.domain.type.PrimitiveType
 import ru.dageev.compiler.parser.CompilationException
 import java.util.*
 
@@ -48,3 +50,6 @@ fun getFieldWithScope(classesContext: ClassesContext, scope: Scope, type: ClassT
         }
     }
 }
+
+
+fun getMainMethodSignature() = MethodSignature(AccessModifier.PUBLIC, "main", emptyList(), PrimitiveType.VOID)

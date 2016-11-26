@@ -33,7 +33,7 @@ class MethodVisitor(scope: Scope, val typeProvider: TypeProvider, val classesCon
         }
 
         val block = ctx.accept(StatementVisitor(scope, typeProvider, classesContext))
-        return MethodDeclaration.ConstructorDeclaration(accessModifier, signature, block)
+        return MethodDeclaration(accessModifier, signature, block)
     }
 
 }

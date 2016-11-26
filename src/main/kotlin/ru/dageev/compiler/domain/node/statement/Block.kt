@@ -1,16 +1,16 @@
 package ru.dageev.compiler.domain.node.statement
 
+import ru.dageev.compiler.bytecodegeneration.statement.StatementGenerator
 import ru.dageev.compiler.domain.scope.Scope
 
 /**
  * Created by dageev
  *  on 15-May-16.
  */
-class Block(scope: Scope, val statements: List<Statement>) : Statement {
-    val scope: Scope
+class Block(val scope: Scope, val statements: List<Statement>) : Statement {
 
-    init {
-        this.scope = scope.copy()
+    override fun accept(generator: StatementGenerator) {
+        generator.generate(this)
     }
 
     override fun toString(): String {

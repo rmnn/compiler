@@ -2,12 +2,13 @@ package ru.dageev.compiler.domain.node.expression
 
 import ru.dageev.compiler.bytecodegeneration.expression.ExpressionGenerator
 import ru.dageev.compiler.bytecodegeneration.statement.StatementGenerator
+import ru.dageev.compiler.domain.type.Type
 
 /**
  * Created by dageev
- *  on 15-May-16.
+ * on 11/26/16.
  */
-class Argument(val expression: Expression) : Expression(expression.type) {
+class EmptyExpression(type: Type) : Expression(type) {
     override fun accept(generator: StatementGenerator) {
         generator.generate(this)
     }
@@ -15,5 +16,4 @@ class Argument(val expression: Expression) : Expression(expression.type) {
     override fun generate(generator: ExpressionGenerator) {
         generator.generate(this)
     }
-    override fun toString() = expression.type.getTypeName()
 }
