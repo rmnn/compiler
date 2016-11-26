@@ -239,6 +239,20 @@ class ParserTest extends GroovyTestCase {
         expectException(source, "Could not find matching constructor with arguments [] for First")
     }
 
+    @Test
+    void testShouldFailForProgramContainsSeveralMainMethods() {
+        def source = """
+        class First {
+           fun main() { }
+        }
+        
+        class Second { 
+            public fun main() : void { }
+        }
+                    """
+        expectException(source, "Found more than 1 main method")
+    }
+
 
     private void expectException(String source, String expectedMessage) {
         def message = shouldFail(CompilationException) {

@@ -55,7 +55,7 @@ data class Scope(val className: String, val parentClassName: String?,
 
     fun fieldExists(name: String) = fields.containsKey(name)
 
-    private fun signatureExists(signature: MethodSignature): Boolean = signatureExists(signature, methodSignatures)
+    fun signatureExists(signature: MethodSignature): Boolean = signatureExists(signature, methodSignatures)
 
     private fun constructorSignatureExists(signature: MethodSignature): Boolean = signatureExists(signature, constructorSignatures)
 
