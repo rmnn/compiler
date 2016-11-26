@@ -253,6 +253,19 @@ class ParserTest extends GroovyTestCase {
         expectException(source, "Found more than 1 main method")
     }
 
+    @Test
+    void testShouldFailForDuplicatedClassDeclaration() {
+        def source = """
+        class First {
+           fun main() { }
+        }
+        
+        class First { 
+        }
+                    """
+        expectException(source, "Found duplicated class declaration for class 'First'")
+    }
+
 
     private void expectException(String source, String expectedMessage) {
         def message = shouldFail(CompilationException) {

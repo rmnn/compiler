@@ -11,6 +11,9 @@ import ru.dageev.compiler.parser.CompilationException
 class ClassesContext(val classes: MutableMap<String, ClassDeclaration> = mutableMapOf()) {
 
     fun addClass(classDeclaration: ClassDeclaration) {
+        if (classes.containsKey(classDeclaration.name)) {
+            throw  CompilationException("Found duplicated class declaration for class '${classDeclaration.name}'")
+        }
         classes.put(classDeclaration.name, classDeclaration)
     }
 
