@@ -266,6 +266,17 @@ class ParserTest extends GroovyTestCase {
         expectException(source, "Found duplicated class declaration for class 'First'")
     }
 
+    @Test
+    void testShouldFailForDuplicatedClassConstructorDeclaration() {
+        def source = """
+        class First {
+           constructor(a:int) { }
+           constructor(b:int) { }
+        }
+                    """
+        expectException(source, "Constructor signature 'public First(int): First' already exists for First")
+    }
+
 
     private void expectException(String source, String expectedMessage) {
         def message = shouldFail(CompilationException) {

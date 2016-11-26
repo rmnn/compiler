@@ -35,7 +35,7 @@ data class Scope(val className: String, val parentClassName: String?,
 
     fun addConstructorSignature(signature: MethodSignature) {
         if (constructorSignatureExists(signature)) {
-            throw  CompilationException("Function signature '$signature' already exists for $className")
+            throw  CompilationException("Constructor signature '$signature' already exists for $className")
         } else {
             constructorSignatures.add(signature)
         }
