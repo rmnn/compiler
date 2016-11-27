@@ -4,7 +4,9 @@ import org.objectweb.asm.ClassWriter
 import ru.dageev.compiler.bytecodegeneration.statement.StatementGenerator
 import ru.dageev.compiler.domain.ClassesContext
 import ru.dageev.compiler.domain.declaration.MethodDeclaration
+import ru.dageev.compiler.domain.node.expression.Call
 import ru.dageev.compiler.domain.node.statement.Block
+import ru.dageev.compiler.domain.type.ClassType
 
 /**
  * Created by dageev
@@ -20,6 +22,9 @@ class ConstructorGenerator(val classesContext: ClassesContext, val classWriter: 
         methodVisitor.visitCode()
 
         val generator = StatementGenerator(block.scope, classesContext, methodVisitor)
+        if (block.statements.none { it is Call.SuperCall }) {
+            Call.SuperCall(emptyList(), ClassType("java.lang.Object")).accept(generator)
+        }
         constructor.statement.accept(generator)
         appendReturnIfNotExists(constructor, block, generator)
         methodVisitor.visitMaxs(-1, -1)

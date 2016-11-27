@@ -16,7 +16,7 @@ import ru.dageev.compiler.parser.visitor.expression.ExpressionVisitor
  */
 class LocalVariableDeclarationVisitor(val scope: Scope, val typeProvider: TypeProvider, val expressionVisitor: ExpressionVisitor) : ElaginBaseVisitor<VariableDeclaration>() {
     override fun visitLocalVariableDeclarationStatement(ctx: ElaginParser.LocalVariableDeclarationStatementContext): VariableDeclaration {
-        val name = ctx.Identifier().text
+        val name = ctx.identifier().text
         val type = typeProvider.getType(ctx.type())
         if (type == PrimitiveType.VOID) {
             throw CompilationException("Variable '$name' could not have VOID type")

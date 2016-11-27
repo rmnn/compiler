@@ -13,11 +13,11 @@ accessModifier
     ;
 
 classDeclaration
-    :   'class' Identifier parentClassDeclaration? classBody
+    :   'class' identifier parentClassDeclaration? classBody
     ;
 
 parentClassDeclaration
-    : ':' Identifier
+    : ':' identifier
     ;
 
 classBody
@@ -25,7 +25,7 @@ classBody
     ;
 
 methodDeclaration
-    :   (accessModifier)? 'fun' Identifier formalParameters (':' type)? methodBody
+    :   (accessModifier)? 'fun' identifier formalParameters (':' type)? methodBody
     ;
 
 constructorDeclaration
@@ -33,7 +33,7 @@ constructorDeclaration
     ;
 
 fieldDeclaration
-    :   (accessModifier)? Identifier ':' type
+    :   (accessModifier)? identifier ':' type
     ;
 
 type
@@ -42,7 +42,7 @@ type
     ;
 
 classType
-    :   Identifier
+    :   identifier
     ;
 
 primitiveType
@@ -60,7 +60,7 @@ formalParameterList
     ;
 
 formalParameter
-    :  Identifier ':' type
+    :   identifier ':' type
     ;
 
 methodBody
@@ -84,14 +84,14 @@ statement : block
            | expression ;
 
 localVariableDeclarationStatement
-    :  Identifier ':' type '=' expression
+    :  identifier ':' type '=' expression
     ;
 
 
 
 assignment
-    :   Identifier '=' assignmentExpr= expression
-    |   classExpr=expression '.' Identifier '=' assignmentExpr=expression
+    :   identifier '=' assignmentExpr= expression
+    |   classExpr=expression '.' identifier '=' assignmentExpr=expression
     ;
 
 ifStatement
@@ -115,21 +115,23 @@ print
     ;
 
 read
-    :   'read' '(' Identifier ')'
+    :   'read' '(' identifier ')'
     ;
 
 expression
     :   booleanLiteral #booleanValue
     |   IntegerLiteral #integerValue
-    |   Identifier #variableReference
-    |   expression '.' Identifier #fieldAccessor
-    |   classRef=expression '.' Identifier '(' expressionList? ')' #methodCall
-    |   Identifier '(' expressionList? ')' #methodCall
-    |   'new' Identifier '(' expressionList? ')' #constructorCall
+    |   identifier #variableReference
+    |   expression '.' identifier #fieldAccessor
+    |   classRef=expression '.' identifier '(' expressionList? ')' #methodCall
+    |   identifier '(' expressionList? ')' #methodCall
+    |   'new' identifier '(' expressionList? ')' #constructorCall
     |   expression operation=('*'|'/'| '%') expression #multDivExpression
     |   expression operation=('+'|'-') expression #sumExpression
     |   expression operation=('<'|'>'|'>='|'<='|'!='|'==') expression #compareExpression
     |   expression operation=('&&'|'||') expression #logicalExpression
+    |   'super' '('expressionList? ')' #superCall
+
     ;
 
 
@@ -141,9 +143,11 @@ IntegerLiteral       : [+-]?('0'|[1-9][0-9]*) ;
 
 booleanLiteral : ('true' | 'false')   ;
 
-Identifier
-    :   Letter (Letter | Digit)*
+identifier
+    : ID
     ;
+
+ID : [_a-zA-Z][-_a-zA-Z0-9]* ;
 
 fragment
 Letter

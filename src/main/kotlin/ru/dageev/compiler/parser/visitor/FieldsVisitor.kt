@@ -23,7 +23,7 @@ class FieldsVisitor(val typeProvider: TypeProvider, scope: Scope) : ElaginBaseVi
     override fun visitFieldDeclaration(ctx: ElaginParser.FieldDeclarationContext): Field {
         val type = typeProvider.getType(ctx.type())
         val accessModifier = getAccessModifier(ctx.accessModifier())
-        val name = ctx.Identifier().text
+        val name = ctx.identifier().text
         return Field(accessModifier, name, type, ClassType(scope.className))
     }
 }

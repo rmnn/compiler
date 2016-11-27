@@ -27,7 +27,7 @@ class MethodCallExpressionVisitor(scope: Scope, val classesContext: ClassesConte
     }
 
     override fun visitMethodCall(ctx: ElaginParser.MethodCallContext): Call {
-        val functionName = ctx.Identifier().text
+        val functionName = ctx.identifier().text
         if (functionName == scope.className) {
             throw IllegalArgumentException(functionName)
         }
@@ -37,6 +37,11 @@ class MethodCallExpressionVisitor(scope: Scope, val classesContext: ClassesConte
 
         val methodCallSignature = getMethodSignature(scope.className, scope, functionName, arguments)
         return Call.MethodCall(methodCallSignature, functionName, arguments, owner)
+    }
+
+    override fun visitSuperCall(ctx: ElaginParser.SuperCallContext): Call {
+        val arguments = getArgumentsForCall(ctx.expressionList())
+        return Call.SuperCall(arguments, ClassType(scope.className))
     }
 
 
@@ -59,7 +64,7 @@ class MethodCallExpressionVisitor(scope: Scope, val classesContext: ClassesConte
     }
 
     override fun visitConstructorCall(ctx: ElaginParser.ConstructorCallContext): Call {
-        val className = ctx.Identifier().text
+        val className = ctx.identifier().text
         val arguments = getArgumentsForCall(ctx.expressionList())
 
         val constructors = if (className == scope.className) scope.constructorSignatures

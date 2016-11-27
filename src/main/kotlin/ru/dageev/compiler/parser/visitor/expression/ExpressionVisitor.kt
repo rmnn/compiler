@@ -39,6 +39,10 @@ class ExpressionVisitor(scope: Scope, val classesContext: ClassesContext) : Elag
         return MethodCallExpressionVisitor(scope, classesContext, this).visitMethodCall(ctx)
     }
 
+    override fun visitSuperCall(ctx: ElaginParser.SuperCallContext): Expression {
+        return MethodCallExpressionVisitor(scope, classesContext, this).visitSuperCall(ctx)
+    }
+
     override fun visitConstructorCall(ctx: ElaginParser.ConstructorCallContext): Expression {
         return MethodCallExpressionVisitor(scope, classesContext, this).visitConstructorCall(ctx)
     }

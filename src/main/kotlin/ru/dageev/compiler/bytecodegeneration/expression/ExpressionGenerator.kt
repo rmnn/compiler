@@ -51,6 +51,10 @@ class ExpressionGenerator(val scope: Scope, val classesContext: ClassesContext, 
         callGenerator.generate(methodCall)
     }
 
+    fun generate(superCall: Call.SuperCall) {
+        callGenerator.generate(superCall)
+    }
+
     fun generate(fieldAccess: FieldAccess) {
         fieldAccessGenerator.generate(fieldAccess)
     }

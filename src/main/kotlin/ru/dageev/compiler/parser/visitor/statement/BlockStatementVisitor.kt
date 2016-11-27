@@ -19,7 +19,8 @@ class BlockStatementVisitor(scope: Scope, val typeProvider: TypeProvider, val cl
     }
 
     override fun visitBlock(ctx: ElaginParser.BlockContext): Block {
-        val statements = ctx.statement().map { it.accept(StatementVisitor(scope, typeProvider, classesContext)) }
+        val statementVisitor = StatementVisitor(scope, typeProvider, classesContext)
+        val statements = ctx.statement().map { it.accept(statementVisitor) }
         return Block(scope, statements)
     }
 }

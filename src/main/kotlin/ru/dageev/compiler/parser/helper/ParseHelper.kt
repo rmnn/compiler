@@ -37,7 +37,7 @@ fun getField(classesContext: ClassesContext, scope: Scope, type: ClassType, fiel
 
 fun getFieldWithScope(classesContext: ClassesContext, scope: Scope, type: ClassType, fieldName: String, ignoreAccessModifier: Boolean = false): Pair<Scope, Optional<Field>> {
     return if (scope.fieldExists(fieldName)) {
-        val field = scope.fields[fieldName]!!
+        val field = scope.getFields()[fieldName]!!
         if (scope.className == type.getTypeName() || ignoreAccessModifier || field.accessModifier != AccessModifier.PRIVATE) {
             scope to Optional.of(field)
         } else {

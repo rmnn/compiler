@@ -25,7 +25,7 @@ class ClassVisitor(val typeProvider: TypeProvider, val classesContext: ClassesCo
 
 
     override fun visitClassDeclaration(@NotNull ctx: ElaginParser.ClassDeclarationContext): ClassDeclaration {
-        val className = ctx.Identifier().text
+        val className = ctx.identifier().text
 
 
         val parent = getParentClass(ctx)
@@ -44,8 +44,8 @@ class ClassVisitor(val typeProvider: TypeProvider, val classesContext: ClassesCo
         return if (parentClassDeclaration == null) {
             Optional.empty()
         } else {
-            val classDeclaration = classesContext.classes[parentClassDeclaration.Identifier().text] ?:
-                    throw CompilationException("Parent class ${parentClassDeclaration.Identifier().text} not exists for ${ctx.Identifier().text}")
+            val classDeclaration = classesContext.classes[parentClassDeclaration.identifier().text] ?:
+                    throw CompilationException("Parent class ${parentClassDeclaration.identifier().text} not exists for ${ctx.identifier().text}")
             Optional.of(classDeclaration)
         }
     }

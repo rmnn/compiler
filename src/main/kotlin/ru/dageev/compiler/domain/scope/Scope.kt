@@ -14,7 +14,7 @@ data class Scope(val className: String, val parentClassName: String?,
                  val constructorSignatures: MutableList<MethodSignature> = mutableListOf(),
                  val methodSignatures: MutableList<MethodSignature> = mutableListOf(),
                  val localVariables: LinkedMap<String, LocalVariable> = LinkedMap<String, LocalVariable>(),
-                 val fields: MutableMap<String, Field> = mutableMapOf()) {
+                 private val fields: MutableMap<String, Field> = mutableMapOf()) {
 
     val signatureMatcher = MethodSignatureMatcher()
 
@@ -61,6 +61,8 @@ data class Scope(val className: String, val parentClassName: String?,
     fun fieldExists(name: String) = fields.containsKey(name)
 
     fun signatureExists(signature: MethodSignature): Boolean = signatureExists(signature, methodSignatures)
+
+    fun getFields() = fields
 
     private fun constructorSignatureExists(signature: MethodSignature): Boolean = signatureExists(signature, constructorSignatures)
 

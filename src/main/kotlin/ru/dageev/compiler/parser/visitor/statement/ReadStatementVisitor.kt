@@ -6,11 +6,11 @@ import ru.dageev.compiler.grammar.ElaginParser
 
 /**
  * Created by dageev
- *  on 15-May-16.
+ *  on 15-May-16. [_a-zA-Z][-_a-zA-Z0-9]* ;
  */
 class ReadStatementVisitor() : ElaginBaseVisitor<ReadStatement>() {
     override fun visitRead(ctx: ElaginParser.ReadContext): ReadStatement {
-        val identifier = ctx.Identifier().text
+        val identifier = ctx.identifier().text
         return ReadStatement(identifier)
     }
 }

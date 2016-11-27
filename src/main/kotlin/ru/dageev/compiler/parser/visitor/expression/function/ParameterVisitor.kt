@@ -13,7 +13,7 @@ import ru.dageev.compiler.parser.visitor.expression.ExpressionVisitor
 class ParameterVisitor(val typeProvider: TypeProvider, val expressionVisitor: ExpressionVisitor) : ElaginBaseVisitor<Parameter>() {
 
     override fun visitFormalParameter(ctx: ElaginParser.FormalParameterContext): Parameter {
-        val name = ctx.Identifier().text
+        val name = ctx.identifier().text
         val type = typeProvider.getType(ctx.type())
         return Parameter(name, type)
     }

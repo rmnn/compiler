@@ -63,6 +63,6 @@ class CompilationUnitVisitor : ElaginBaseVisitor<CompilationUnit>() {
     }
 
     private fun createTypeProvider(classDeclarationContext: List<ElaginParser.ClassDeclarationContext>): TypeProvider {
-        return TypeProvider(classDeclarationContext.map { ClassType(it.Identifier().text) })
+        return TypeProvider(classDeclarationContext.map { ClassType(it.identifier().text) })
     }
 }

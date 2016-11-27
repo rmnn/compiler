@@ -1,5 +1,8 @@
 class FieldsTest {
-    fun start() { }
+    fun start() :int {
+        print(10)
+        return 10 + 1
+     }
 
     fun main() {
         a:int = 10

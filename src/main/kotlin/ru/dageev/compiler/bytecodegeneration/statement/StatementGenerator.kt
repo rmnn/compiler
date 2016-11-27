@@ -28,12 +28,12 @@ class StatementGenerator(scope: Scope, classesContext: ClassesContext, methodVis
         expressionGenerator = ExpressionGenerator(scope, classesContext, methodVisitor)
         printStatementGenerator = PrintStatementGenerator(methodVisitor, expressionGenerator)
         variableDeclarationGenerator = VariableDeclarationGenerator(scope, this, expressionGenerator)
-        assignmentStatementGenerator = AssignmentStatementGenerator(scope, methodVisitor, expressionGenerator)
+        assignmentStatementGenerator = AssignmentStatementGenerator(scope, classesContext, methodVisitor, expressionGenerator)
         blockStatementGenerator = BlockStatementGenerator(classesContext, methodVisitor)
         returnStatementGenerator = ReturnStatementGenerator(expressionGenerator, methodVisitor)
         ifStatementGenerator = IfStatementGenerator(this, expressionGenerator, methodVisitor)
         whileStatementGenerator = WhileStatementGenerator(this, expressionGenerator, methodVisitor)
-        readStatementGenerator = ReadStatementGenerator(scope, methodVisitor)
+        readStatementGenerator = ReadStatementGenerator(scope, classesContext, methodVisitor)
     }
 
     fun generate(assignment: Assignment) {
@@ -127,6 +127,10 @@ class StatementGenerator(scope: Scope, classesContext: ClassesContext, methodVis
 
     fun generate(constructorCall: Call.ConstructorCall) {
         constructorCall.accept(expressionGenerator)
+    }
+
+    fun generate(superCall: Call.SuperCall) {
+        superCall.accept(expressionGenerator)
     }
 
     fun generate(emptyExpression: EmptyExpression) {

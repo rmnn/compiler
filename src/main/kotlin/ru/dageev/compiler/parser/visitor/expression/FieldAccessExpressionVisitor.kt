@@ -21,7 +21,7 @@ class FieldAccessExpressionVisitor(scope: Scope, val classesContext: ClassesCont
     }
 
     override fun visitFieldAccessor(ctx: ElaginParser.FieldAccessorContext): FieldAccess {
-        val name = ctx.Identifier().text
+        val name = ctx.identifier().text
         val expression = ctx.expression().accept(expressionVisitor)
         if (expression.type is ClassType) {
             val fieldType = assertCorrectVariableReference(classesContext, scope, expression.type, name)

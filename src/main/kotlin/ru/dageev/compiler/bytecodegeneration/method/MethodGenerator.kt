@@ -29,7 +29,7 @@ class MethodGenerator(val classesContext: ClassesContext, val classWriter: Class
         val methodVisitor = classWriter.visitMethod(access, method.methodSignature.name, descriptor, null, null)
         methodVisitor.visitCode()
         val statementGenerator = StatementGenerator(block.scope, classesContext, methodVisitor)
-//            method.statement.accept(statementGenerator)
+        block.accept(statementGenerator)
         appendReturnIfNotExists(method, block, statementGenerator)
         methodVisitor.visitMaxs(-1, -1)
         methodVisitor.visitEnd()

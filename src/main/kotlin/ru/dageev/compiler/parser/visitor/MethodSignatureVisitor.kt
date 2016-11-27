@@ -24,7 +24,7 @@ class MethodSignatureVisitor(scope: Scope, val typeProvider: TypeProvider, val c
 
     override fun visitMethodDeclaration(ctx: ElaginParser.MethodDeclarationContext): MethodSignature {
         val accessModifier = getAccessModifier(ctx.accessModifier())
-        val functionName = ctx.Identifier().text
+        val functionName = ctx.identifier().text
         val returnType = typeProvider.getType(ctx.type())
         val params = ctx.formalParameters().accept(ParameterListVisitor(typeProvider, ExpressionVisitor(scope, classesContext)))
 

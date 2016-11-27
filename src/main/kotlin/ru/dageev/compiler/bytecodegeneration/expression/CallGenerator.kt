@@ -25,7 +25,7 @@ class CallGenerator(val scope: Scope, val classesContext: ClassesContext, val ex
             methodVisitor.visitTypeInsn(Opcodes.NEW, ownerDescriptor)
             methodVisitor.visitInsn(Opcodes.DUP)
             val methodDescriptor = signature.get().getDescriptor()
-            generateArguments(constructorCall, signature.get())
+            generateArguments(constructorCall)
             methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, ownerDescriptor, "<init>", methodDescriptor, false)
         }
     }
@@ -33,10 +33,17 @@ class CallGenerator(val scope: Scope, val classesContext: ClassesContext, val ex
 
     fun generate(methodCall: Call.MethodCall) {
         methodCall.owner.accept(expressionGenerator)
-        generateArguments(methodCall, methodCall.methodSignature)
+        generateArguments(methodCall)
         val methodDescriptor = methodCall.methodSignature.getDescriptor()
         val ownerDescriptor = methodCall.owner.type.getInternalName()
         methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, ownerDescriptor, methodCall.methodSignature.name, methodDescriptor, false)
+    }
+
+    fun generate(superCall: Call.SuperCall) {
+        methodVisitor.visitVarInsn(Opcodes.ALOAD, 0)
+        generateArguments(superCall)
+        val ownerDescriptor = superCall.type.getInternalName()
+        methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, ownerDescriptor, "<init>", "()V" /*TODO Handle super calls with arguments*/, false)
     }
 
     private fun getConstructor(constructorCallExpression: Call.ConstructorCall): Optional<MethodSignature> {
@@ -49,11 +56,8 @@ class CallGenerator(val scope: Scope, val classesContext: ClassesContext, val ex
     }
 
 
-    private fun generateArguments(call: Call, signature: MethodSignature) {
-        if (call.arguments.size > signature.parameters.size) {
-            throw CompilationException("Too much arguments found for call $call")
-        }
-        call.arguments.forEach { argument -> argument.accept(expressionGenerator) }
-    }
+    private fun generateArguments(call: Call) =
+            call.arguments.forEach { argument -> argument.accept(expressionGenerator) }
+
 
 }

@@ -32,5 +32,15 @@ sealed class Call(val identifier: String, val arguments: List<Argument>, type: T
         }
     }
 
+    class SuperCall(arguments: List<Argument>, type: Type) : Call("super", arguments, type) {
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
+
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
+    }
+
 
 }

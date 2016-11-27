@@ -196,7 +196,7 @@ class ParserTest extends GroovyTestCase {
     void testShouldFailForDeclarationVariableWithVoidType() {
         def source = """
         class First {
-            fun function() {
+            fun function() {Constructor signature 'public First(int): First' already exists for First
                 a:void = 100
             }         
         }
@@ -274,7 +274,7 @@ class ParserTest extends GroovyTestCase {
            constructor(b:int) { }
         }
                     """
-        expectException(source, "Constructor signature 'public First(int): First' already exists for First")
+        expectException(source, "Constructor signature 'public First(int): void' already exists for First")
     }
 
     @Test

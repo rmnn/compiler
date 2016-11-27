@@ -22,7 +22,7 @@ class AssignmentStatementVisitor(scope: Scope, val classesContext: ClassesContex
     }
 
     override fun visitAssignment(ctx: ElaginParser.AssignmentContext): Assignment {
-        val name = ctx.Identifier().text
+        val name = ctx.identifier().text
         val expression = ctx.assignmentExpr.accept(expressionVisitor)
         val classType = if (ctx.classExpr != null) {
             val expr = ctx.classExpr.accept(expressionVisitor)
