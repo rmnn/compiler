@@ -13,7 +13,7 @@ class FieldAccess(val identifier: String, val classType: ClassType) : Expression
         generator.generate(this)
     }
 
-    override fun generate(generator: ExpressionGenerator) {
+    override fun accept(generator: ExpressionGenerator) {
         generator.generate(this)
     }
 }

@@ -9,5 +9,5 @@ import ru.dageev.compiler.domain.type.Type
  *  on 15-May-16.
  */
 abstract class Expression(val type: Type) : Statement {
-    abstract fun generate(generator: ExpressionGenerator)
+    abstract fun accept(generator: ExpressionGenerator)
 }

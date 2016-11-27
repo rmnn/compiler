@@ -1,5 +1,6 @@
 package ru.dageev.compiler.domain.scope
 
+import org.apache.commons.collections4.map.LinkedMap
 import ru.dageev.compiler.domain.node.expression.Argument
 import ru.dageev.compiler.parser.CompilationException
 import ru.dageev.compiler.parser.matcher.MethodSignatureMatcher
@@ -12,7 +13,7 @@ import java.util.*
 data class Scope(val className: String, val parentClassName: String?,
                  val constructorSignatures: MutableList<MethodSignature> = mutableListOf(),
                  val methodSignatures: MutableList<MethodSignature> = mutableListOf(),
-                 val localVariables: MutableMap<String, LocalVariable> = mutableMapOf(),
+                 val localVariables: LinkedMap<String, LocalVariable> = LinkedMap<String, LocalVariable>(),
                  val fields: MutableMap<String, Field> = mutableMapOf()) {
 
     val signatureMatcher = MethodSignatureMatcher()
@@ -65,6 +66,6 @@ data class Scope(val className: String, val parentClassName: String?,
         }
     }
 
-    fun copy(): Scope = Scope(className, parentClassName, ArrayList(constructorSignatures), ArrayList(methodSignatures), HashMap(localVariables), HashMap(fields))
+    fun copy(): Scope = Scope(className, parentClassName, ArrayList(constructorSignatures), ArrayList(methodSignatures), LinkedMap(localVariables), HashMap(fields))
 
 }

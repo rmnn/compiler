@@ -11,38 +11,135 @@ import ru.dageev.compiler.domain.type.Type
  */
 sealed class BinaryExpression(val leftExpression: Expression, val rightExpression: Expression, type: Type) : Expression(type) {
 
-    class AdditionalExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT)
+    class AdditionalExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT) {
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
 
-    class DivisionalExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT)
-
-    class EqualityExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT)
-
-    class ModuleExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT)
-
-    class MultiplicationExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT)
-
-    class SubtractionExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT)
-
-    class GreaterExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN)
-
-    class GreaterEqualsExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN)
-
-    class LessEqualsExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN)
-
-    class LogicalOrExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN)
-
-    class LogicalAndExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN)
-
-    class NonEqualityExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN)
-
-    class LessExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN)
-
-
-    override fun accept(generator: StatementGenerator) {
-        generator.generate(this)
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
     }
 
-    override fun generate(generator: ExpressionGenerator) {
-        generator.generate(this)
+    class DivisionalExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT) {
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
+
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
     }
+
+    class EqualityExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT) {
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
+
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
+    }
+
+    class ModuleExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT) {
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
+
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
+    }
+
+    class MultiplicationExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT) {
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
+
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
+    }
+
+    class SubtractionExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT) {
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
+
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
+    }
+
+    class GreaterExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN) {
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
+
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
+    }
+
+    class GreaterEqualsExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN) {
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
+
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
+    }
+
+    class LessEqualsExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN) {
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
+
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
+    }
+
+    class LogicalOrExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN) {
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
+
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
+    }
+
+    class LogicalAndExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN) {
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
+
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
+    }
+
+    class NonEqualityExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN) {
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
+
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
+    }
+
+    class LessExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN) {
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
+
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
+    }
+
+
 }

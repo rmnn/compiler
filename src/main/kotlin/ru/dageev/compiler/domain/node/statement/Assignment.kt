@@ -8,7 +8,7 @@ import ru.dageev.compiler.domain.type.ClassType
  * Created by dageev
  *  on 14-May-16.
  */
-class Assignment(val classType: ClassType, val varName: String, expression: Expression) : Statement {
+class Assignment(val classType: ClassType, val varName: String, val expression: Expression) : Statement {
     override fun accept(generator: StatementGenerator) {
         generator.generate(this)
     }

@@ -12,15 +12,25 @@ import ru.dageev.compiler.domain.type.Type
  */
 sealed class Call(val identifier: String, val arguments: List<Argument>, type: Type) : Expression(type) {
 
-    class ConstructorCall(identifier: String, arguments: List<Argument>) : Call(identifier, arguments, ClassType(identifier))
+    class ConstructorCall(identifier: String, arguments: List<Argument>) : Call(identifier, arguments, ClassType(identifier)) {
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
 
-    class MethodCall(val methodSignature: MethodSignature, identifier: String, arguments: List<Argument>, val owner: Expression) : Call(identifier, arguments, methodSignature.returnType)
-
-    override fun accept(generator: StatementGenerator) {
-        generator.generate(this)
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
     }
 
-    override fun generate(generator: ExpressionGenerator) {
-        generator.generate(this)
+    class MethodCall(val methodSignature: MethodSignature, identifier: String, arguments: List<Argument>, val owner: Expression) : Call(identifier, arguments, methodSignature.returnType) {
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
+
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
     }
+
+
 }

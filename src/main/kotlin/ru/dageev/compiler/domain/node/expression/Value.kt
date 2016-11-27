@@ -14,7 +14,7 @@ class Value(val value: String, type: Type) : Expression(type) {
         generator.generate(this)
     }
 
-    override fun generate(generator: ExpressionGenerator) {
+    override fun accept(generator: ExpressionGenerator) {
         generator.generate(this)
     }
     override fun toString(): String {

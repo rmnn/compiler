@@ -1,9 +1,19 @@
 package ru.dageev.compiler.domain.node.expression
 
+import ru.dageev.compiler.bytecodegeneration.expression.ExpressionGenerator
+import ru.dageev.compiler.bytecodegeneration.statement.StatementGenerator
 import ru.dageev.compiler.domain.type.Type
 
 /**
  * Created by dageev
  *  on 15-May-16.
  */
-data class Parameter(val name: String, val type: Type)
+class Parameter(val name: String, type: Type) : Expression(type) {
+    override fun accept(generator: StatementGenerator) {
+        generator.generate(this)
+    }
+
+    override fun accept(generator: ExpressionGenerator) {
+        generator.generate(this)
+    }
+}

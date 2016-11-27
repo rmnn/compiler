@@ -18,19 +18,20 @@ class MethodGenerator(val classWriter: ClassWriter) : AbstractMethodGenerator() 
 
 
     fun generate(method: MethodDeclaration) {
+        val block = method.statement as Block
         val (access, descriptor) = if (isMainMethod(method.methodSignature)) {
             Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC to getMainMethodDescriptor()
         } else {
             method.accessModifier.opCode to getMethodDescriptor(method.methodSignature)
         }
 
-        val mv = classWriter.visitMethod(access, method.methodSignature.name, descriptor, null, null)
-        mv.visitCode()
-        val statementGenerator = StatementGenerator(classWriter)
+        val methodVisitor = classWriter.visitMethod(access, method.methodSignature.name, descriptor, null, null)
+        methodVisitor.visitCode()
+        val statementGenerator = StatementGenerator(methodVisitor, block.scope)
         method.statement.accept(statementGenerator)
-        appendReturnIfNotExists(method, method.statement as Block, statementGenerator)
-        mv.visitMaxs(-1, -1)
-        mv.visitEnd()
+        appendReturnIfNotExists(method, block, statementGenerator)
+        methodVisitor.visitMaxs(-1, -1)
+        methodVisitor.visitEnd()
     }
 
 

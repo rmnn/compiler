@@ -9,7 +9,7 @@ import ru.dageev.compiler.domain.type.Type
  * Created by dageev
  * on 10/30/16.
  */
-data class Field(val accessModifier: AccessModifier, val name: String, val type: Type) {
+data class Field(val accessModifier: AccessModifier, val name: String, val type: Type, val ownerType: Type) {
     fun accept(generator: FieldGenerator) {
         generator.generate(this)
     }

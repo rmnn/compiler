@@ -11,15 +11,16 @@ import ru.dageev.compiler.domain.node.statement.Block
  */
 class ConstructorGenerator(val classWriter: ClassWriter) : AbstractMethodGenerator() {
 
-    val statementGenerator = StatementGenerator(classWriter)
-
     fun generate(constructor: MethodDeclaration.ConstructorDeclaration) {
         val description = getMethodDescriptor(constructor.methodSignature)
+        val block = constructor.statement as Block
 
         val methodVisitor = classWriter.visitMethod(constructor.methodSignature.accessModifier.opCode, "<init>", description, null, null)
         methodVisitor.visitCode()
-        constructor.statement.accept(statementGenerator)
-        appendReturnIfNotExists(constructor, constructor.statement as Block, statementGenerator)
+
+        val generator = StatementGenerator(methodVisitor, block.scope)
+        constructor.statement.accept(generator)
+        appendReturnIfNotExists(constructor, block, generator)
         methodVisitor.visitMaxs(-1, -1)
         methodVisitor.visitEnd()
     }

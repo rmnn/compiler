@@ -12,15 +12,25 @@ import ru.dageev.compiler.domain.type.Type
  */
 sealed class VariableReference(type: Type) : Expression(type) {
 
-    class LocalVariableReference(val localVariable: LocalVariable) : VariableReference(localVariable.type)
+    class LocalVariableReference(val localVariable: LocalVariable) : VariableReference(localVariable.type) {
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
 
-    class FieldReference(val field: Field) : VariableReference(field.type)
-
-    override fun accept(generator: StatementGenerator) {
-        generator.generate(this)
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
     }
 
-    override fun generate(generator: ExpressionGenerator) {
-        generator.generate(this)
+    class FieldReference(val field: Field) : VariableReference(field.type) {
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
+
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
     }
+
+
 }

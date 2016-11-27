@@ -9,11 +9,12 @@ import ru.dageev.compiler.bytecodegeneration.statement.StatementGenerator
  */
 class Argument(val expression: Expression) : Expression(expression.type) {
     override fun accept(generator: StatementGenerator) {
-        generator.generate(this)
+        expression.accept(generator)
     }
 
-    override fun generate(generator: ExpressionGenerator) {
-        generator.generate(this)
+    override fun accept(generator: ExpressionGenerator) {
+        expression.accept(generator)
     }
+
     override fun toString() = expression.type.getTypeName()
 }

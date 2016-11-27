@@ -8,4 +8,10 @@ interface Type {
     fun getTypeName(): String
 
     fun getDescriptor(): String
+
+    fun getInternalName(): String
+
+    fun getStoreVariableOpcode(): Int
+
+    fun getReturnOpcode(): Int
 }
