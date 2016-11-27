@@ -10,7 +10,7 @@ import ru.dageev.compiler.domain.node.expression.Expression
 class ReturnStatement(val expression: Expression) : Statement {
 
     override fun accept(generator: StatementGenerator) {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+        generator.generate(this)
     }
 
     override fun toString(): String {

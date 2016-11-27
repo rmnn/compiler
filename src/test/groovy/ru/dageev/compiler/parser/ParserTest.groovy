@@ -277,6 +277,25 @@ class ParserTest extends GroovyTestCase {
         expectException(source, "Constructor signature 'public First(int): First' already exists for First")
     }
 
+    @Test
+    void testShouldFailForNonIntArgumentInArithmeticOperation() {
+        def source = """
+        class First {
+           fun main() { a: int = 1 + true }
+        }
+                    """
+        expectException(source, "Incorrect right expression type for operation '+'. Expected 'int', found 'boolean'")
+    }
+
+    void testShouldFailForNonBooleanArgumentInLogicalOperation() {
+        def source = """
+        class First {
+           fun main() { a: boolean = new First() && true }
+        }
+                    """
+        expectException(source, "Incorrect left expression type for operation '&&'. Expected 'boolean', found 'First'")
+    }
+
 
     private void expectException(String source, String expectedMessage) {
         def message = shouldFail(CompilationException) {

@@ -7,6 +7,7 @@ import ru.dageev.compiler.domain.scope.MethodSignature
 import ru.dageev.compiler.domain.scope.Scope
 import ru.dageev.compiler.domain.type.ClassType
 import ru.dageev.compiler.domain.type.PrimitiveType
+import ru.dageev.compiler.domain.type.Type
 import ru.dageev.compiler.parser.CompilationException
 import java.util.*
 
@@ -16,7 +17,7 @@ import java.util.*
  */
 
 
-fun assertCorrectVariableReference(classesContext: ClassesContext, scope: Scope, type: ClassType, fieldName: String) {
+fun assertCorrectVariableReference(classesContext: ClassesContext, scope: Scope, type: ClassType, fieldName: String): Type {
     val (desiredScope, field) = getFieldWithScope(classesContext, scope, type, fieldName, true)
     if (!field.isPresent) {
         throw CompilationException("Field '$fieldName' for '${scope.className}' not exists")
@@ -24,6 +25,7 @@ fun assertCorrectVariableReference(classesContext: ClassesContext, scope: Scope,
         if (field.get().accessModifier == AccessModifier.PRIVATE && desiredScope.className != type.getTypeName()) {
             throw  CompilationException("Unable to get access private field '$fieldName' of class '${desiredScope.className}'")
         }
+        return field.get().type
     }
 }
 

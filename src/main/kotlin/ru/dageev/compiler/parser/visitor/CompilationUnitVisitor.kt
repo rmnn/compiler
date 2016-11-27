@@ -1,7 +1,6 @@
 package ru.dageev.compiler.parser.visitor
 
 import org.antlr.v4.runtime.misc.NotNull
-import ru.dageev.compiler.domain.AccessModifier
 import ru.dageev.compiler.domain.ClassesContext
 import ru.dageev.compiler.domain.CompilationUnit
 import ru.dageev.compiler.domain.declaration.ClassDeclaration
@@ -55,7 +54,7 @@ class CompilationUnitVisitor : ElaginBaseVisitor<CompilationUnit>() {
     private fun addStubMainMethod(classesContext: ClassesContext, mainMethodSignature: MethodSignature, classes: MutableList<ClassDeclaration>) {
         val firstKey = classesContext.classes.keys.first()
         val classDecl = classesContext.classes[firstKey]!!
-        val methods = classDecl.methods + MethodDeclaration(AccessModifier.PUBLIC, mainMethodSignature, Block(classesContext.getClassScope(firstKey), emptyList()))
+        val methods = classDecl.methods + MethodDeclaration(mainMethodSignature, Block(classesContext.getClassScope(firstKey), emptyList()))
         val patchedClassDeclaration = ClassDeclaration(classDecl.name, classDecl.fields, methods, classDecl.constructors, classDecl.parentClassDeclaration)
         classesContext.classes.put(firstKey, patchedClassDeclaration)
 

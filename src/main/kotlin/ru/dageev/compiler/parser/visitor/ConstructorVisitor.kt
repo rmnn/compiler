@@ -8,7 +8,6 @@ import ru.dageev.compiler.domain.type.ClassType
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
 import ru.dageev.compiler.parser.provider.TypeProvider
-import ru.dageev.compiler.parser.provider.getAccessModifier
 import ru.dageev.compiler.parser.visitor.statement.StatementVisitor
 
 /**
@@ -23,14 +22,13 @@ class ConstructorVisitor(scope: Scope, val typeProvider: TypeProvider, val class
     }
 
     override fun visitConstructorDeclaration(ctx: ElaginParser.ConstructorDeclarationContext): ConstructorDeclaration {
-        val accessModifier = getAccessModifier(ctx.accessModifier())
         scope.addLocalVariable(LocalVariable("this", ClassType(scope.className)))
         val signature = ctx.accept(MethodSignatureVisitor(scope, typeProvider, classesContext))
         signature.parameters.forEach { param ->
             scope.addLocalVariable(LocalVariable(param.name, param.type))
         }
         val block = ctx.accept(StatementVisitor(scope, typeProvider, classesContext))
-        return ConstructorDeclaration(accessModifier, signature, block)
+        return ConstructorDeclaration(signature, block)
     }
 
 }

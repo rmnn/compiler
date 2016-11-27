@@ -8,7 +8,6 @@ import ru.dageev.compiler.domain.type.ClassType
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
 import ru.dageev.compiler.parser.provider.TypeProvider
-import ru.dageev.compiler.parser.provider.getAccessModifier
 import ru.dageev.compiler.parser.visitor.statement.StatementVisitor
 
 /**
@@ -24,16 +23,13 @@ class MethodVisitor(scope: Scope, val typeProvider: TypeProvider, val classesCon
 
     override fun visitMethodDeclaration(ctx: ElaginParser.MethodDeclarationContext): MethodDeclaration {
         scope.addLocalVariable(LocalVariable("this", ClassType(scope.className)))
-
-        val accessModifier = getAccessModifier(ctx.accessModifier())
         val signature = ctx.accept(MethodSignatureVisitor(scope, typeProvider, classesContext))
-
         signature.parameters.forEach { param ->
             scope.addLocalVariable(LocalVariable(param.name, param.type))
         }
 
         val block = ctx.accept(StatementVisitor(scope, typeProvider, classesContext))
-        return MethodDeclaration(accessModifier, signature, block)
+        return MethodDeclaration(signature, block)
     }
 
 }

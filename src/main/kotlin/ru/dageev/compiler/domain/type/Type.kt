@@ -14,4 +14,7 @@ interface Type {
     fun getStoreVariableOpcode(): Int
 
     fun getReturnOpcode(): Int
+
+    fun getLoadVariableOpcode(): Int
+
 }

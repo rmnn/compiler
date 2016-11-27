@@ -24,8 +24,8 @@ class FieldAccessExpressionVisitor(scope: Scope, val classesContext: ClassesCont
         val name = ctx.Identifier().text
         val expression = ctx.expression().accept(expressionVisitor)
         if (expression.type is ClassType) {
-            assertCorrectVariableReference(classesContext, scope, expression.type, name)
-            return FieldAccess(name, expression.type)
+            val fieldType = assertCorrectVariableReference(classesContext, scope, expression.type, name)
+            return FieldAccess(name, fieldType, expression.type)
         } else {
             throw CompilationException("Unable to access field of primitive types")
         }

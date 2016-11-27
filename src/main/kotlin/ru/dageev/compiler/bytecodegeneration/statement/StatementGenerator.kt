@@ -2,6 +2,7 @@ package ru.dageev.compiler.bytecodegeneration.statement
 
 import org.objectweb.asm.MethodVisitor
 import ru.dageev.compiler.bytecodegeneration.expression.ExpressionGenerator
+import ru.dageev.compiler.domain.ClassesContext
 import ru.dageev.compiler.domain.node.expression.*
 import ru.dageev.compiler.domain.node.statement.*
 import ru.dageev.compiler.domain.scope.Scope
@@ -10,7 +11,7 @@ import ru.dageev.compiler.domain.scope.Scope
  * Created by dageev
  * on 11/26/16.
  */
-class StatementGenerator(methodVisitor: MethodVisitor, scope: Scope) {
+class StatementGenerator(scope: Scope, classesContext: ClassesContext, methodVisitor: MethodVisitor) {
 
     val expressionGenerator: ExpressionGenerator
     val printStatementGenerator: PrintStatementGenerator
@@ -24,11 +25,11 @@ class StatementGenerator(methodVisitor: MethodVisitor, scope: Scope) {
 
 
     init {
-        expressionGenerator = ExpressionGenerator(methodVisitor, scope)
+        expressionGenerator = ExpressionGenerator(scope, classesContext, methodVisitor)
         printStatementGenerator = PrintStatementGenerator(methodVisitor, expressionGenerator)
         variableDeclarationGenerator = VariableDeclarationGenerator(scope, this, expressionGenerator)
         assignmentStatementGenerator = AssignmentStatementGenerator(scope, methodVisitor, expressionGenerator)
-        blockStatementGenerator = BlockStatementGenerator(methodVisitor)
+        blockStatementGenerator = BlockStatementGenerator(classesContext, methodVisitor)
         returnStatementGenerator = ReturnStatementGenerator(expressionGenerator, methodVisitor)
         ifStatementGenerator = IfStatementGenerator(this, expressionGenerator, methodVisitor)
         whileStatementGenerator = WhileStatementGenerator(this, expressionGenerator, methodVisitor)
@@ -70,7 +71,6 @@ class StatementGenerator(methodVisitor: MethodVisitor, scope: Scope) {
 
     fun generate(additional: BinaryExpression.AdditionalExpression) {
         additional.accept(expressionGenerator)
-
     }
 
     fun generate(division: BinaryExpression.DivisionalExpression) {

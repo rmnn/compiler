@@ -3,7 +3,7 @@ package ru.dageev.compiler.parser.visitor
 import ru.dageev.compiler.domain.ClassesContext
 import ru.dageev.compiler.domain.scope.MethodSignature
 import ru.dageev.compiler.domain.scope.Scope
-import ru.dageev.compiler.domain.type.ClassType
+import ru.dageev.compiler.domain.type.PrimitiveType
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
 import ru.dageev.compiler.parser.provider.TypeProvider
@@ -34,9 +34,8 @@ class MethodSignatureVisitor(scope: Scope, val typeProvider: TypeProvider, val c
     override fun visitConstructorDeclaration(ctx: ElaginParser.ConstructorDeclarationContext): MethodSignature {
         val accessModifier = getAccessModifier(ctx.accessModifier())
         val functionName = scope.className
-        val returnType = ClassType(scope.className)
         val params = ctx.formalParameters().accept(ParameterListVisitor(typeProvider, ExpressionVisitor(scope, classesContext)))
 
-        return MethodSignature(accessModifier, functionName, params, returnType)
+        return MethodSignature(accessModifier, functionName, params, PrimitiveType.VOID)
     }
 }

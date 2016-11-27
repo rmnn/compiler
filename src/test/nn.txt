@@ -1,0 +1,28 @@
+public class FieldsTest {
+  public void start();
+    Code:
+       0: return
+
+  public FieldsTest();
+    Code:
+       0: aload_0
+       1: invokespecial #9                  // Method java/lang/Object."<init>":()V
+       4: return
+
+  public static void main(java.lang.String[]);
+    Code:
+       0: return
+}
+
+
+
+public class FieldsTest {
+  public FieldsTest();
+
+  public void start();
+
+  public static void main(java.lang.String[]);
+    Code:
+       0: return
+}
+

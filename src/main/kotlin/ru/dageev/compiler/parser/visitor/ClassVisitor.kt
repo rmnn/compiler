@@ -9,7 +9,7 @@ import ru.dageev.compiler.domain.node.statement.Block
 import ru.dageev.compiler.domain.scope.Field
 import ru.dageev.compiler.domain.scope.MethodSignature
 import ru.dageev.compiler.domain.scope.Scope
-import ru.dageev.compiler.domain.type.ClassType
+import ru.dageev.compiler.domain.type.PrimitiveType
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
 import ru.dageev.compiler.parser.CompilationException
@@ -60,7 +60,7 @@ class ClassVisitor(val typeProvider: TypeProvider, val classesContext: ClassesCo
     }
 
     private fun getDefaultConstructor(): MethodDeclaration.ConstructorDeclaration {
-        return MethodDeclaration.ConstructorDeclaration(AccessModifier.PUBLIC, getDefaultConstructorSignature(), Block(scope, emptyList()))
+        return MethodDeclaration.ConstructorDeclaration(getDefaultConstructorSignature(), Block(scope, emptyList()))
     }
 
     private fun registerMethodSignatures(ctx: ElaginParser.ClassDeclarationContext) {
@@ -79,7 +79,7 @@ class ClassVisitor(val typeProvider: TypeProvider, val classesContext: ClassesCo
     }
 
     private fun getDefaultConstructorSignature(): MethodSignature {
-        return MethodSignature(AccessModifier.PUBLIC, scope.className, emptyList(), ClassType(scope.className))
+        return MethodSignature(AccessModifier.PUBLIC, scope.className, emptyList(), PrimitiveType.VOID)
     }
 
 

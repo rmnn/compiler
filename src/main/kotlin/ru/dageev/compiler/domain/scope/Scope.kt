@@ -54,6 +54,10 @@ data class Scope(val className: String, val parentClassName: String?,
     }
 
 
+    fun getConstructorCallSignature(arguments: List<Argument>): Optional<MethodSignature> {
+        return Optional.ofNullable(constructorSignatures.find { signature -> signatureMatcher.matches(signature, signature.name, arguments) })
+    }
+
     fun fieldExists(name: String) = fields.containsKey(name)
 
     fun signatureExists(signature: MethodSignature): Boolean = signatureExists(signature, methodSignatures)
