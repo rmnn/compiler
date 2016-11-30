@@ -11,6 +11,7 @@ import ru.dageev.compiler.domain.type.Type
  */
 sealed class BinaryExpression(val leftExpression: Expression, val rightExpression: Expression, type: Type) : Expression(type) {
 
+
     class AdditionalExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT) {
         override fun accept(generator: StatementGenerator) {
             generator.generate(this)
@@ -31,27 +32,19 @@ sealed class BinaryExpression(val leftExpression: Expression, val rightExpressio
         }
     }
 
-    class EqualityExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT) {
-        override fun accept(generator: StatementGenerator) {
-            generator.generate(this)
-        }
-
-        override fun accept(generator: ExpressionGenerator) {
-            generator.generate(this)
-        }
-    }
-
     class ModuleExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT) {
+
         override fun accept(generator: StatementGenerator) {
             generator.generate(this)
         }
-
         override fun accept(generator: ExpressionGenerator) {
             generator.generate(this)
         }
+
     }
 
     class MultiplicationExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT) {
+
         override fun accept(generator: StatementGenerator) {
             generator.generate(this)
         }
@@ -59,9 +52,22 @@ sealed class BinaryExpression(val leftExpression: Expression, val rightExpressio
         override fun accept(generator: ExpressionGenerator) {
             generator.generate(this)
         }
+
     }
 
     class SubtractionExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT) {
+
+        override fun accept(generator: StatementGenerator) {
+            generator.generate(this)
+        }
+
+        override fun accept(generator: ExpressionGenerator) {
+            generator.generate(this)
+        }
+
+    }
+
+    class EqualityExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT) {
         override fun accept(generator: StatementGenerator) {
             generator.generate(this)
         }

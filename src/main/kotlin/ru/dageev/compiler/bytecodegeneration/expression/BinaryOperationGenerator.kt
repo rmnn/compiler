@@ -10,6 +10,12 @@ import ru.dageev.compiler.domain.node.expression.BinaryExpression
  */
 class BinaryOperationGenerator(val expressionGenerator: ExpressionGenerator, val methodVisitor: MethodVisitor) {
 
+    val booleanExpressionGenerator: BooleanExpressionGenerator
+
+    init {
+        booleanExpressionGenerator = BooleanExpressionGenerator(expressionGenerator, methodVisitor)
+    }
+
     fun generate(additional: BinaryExpression.AdditionalExpression) {
         evaluateOperation(additional, Opcodes.IADD)
     }
@@ -31,31 +37,30 @@ class BinaryOperationGenerator(val expressionGenerator: ExpressionGenerator, val
         evaluateOperation(module, Opcodes.IREM)
     }
 
-    // TODO INCORRECT, REWRITE
     fun generate(equality: BinaryExpression.EqualityExpression) {
-        evaluateOperation(equality, Opcodes.IF_ACMPEQ)
+        booleanExpressionGenerator.generate(equality, CompareSign.EQUALS)
     }
 
     fun generate(greater: BinaryExpression.GreaterExpression) {
-        evaluateOperation(greater, Opcodes.IF_ICMPGT)
+        booleanExpressionGenerator.generate(greater, CompareSign.GREATER)
     }
 
     fun generate(greaterEquals: BinaryExpression.GreaterEqualsExpression) {
-        evaluateOperation(greaterEquals, Opcodes.IF_ICMPGE)
+        booleanExpressionGenerator.generate(greaterEquals, CompareSign.GREATER_EQUALS)
     }
 
     fun generate(less: BinaryExpression.LessExpression) {
-        evaluateOperation(less, Opcodes.IF_ICMPLT)
+        booleanExpressionGenerator.generate(less, CompareSign.LESS)
     }
 
     fun generate(lessEquals: BinaryExpression.LessEqualsExpression) {
-        evaluateOperation(lessEquals, Opcodes.IF_ICMPLE)
+        booleanExpressionGenerator.generate(lessEquals, CompareSign.LESS_EQUALS)
     }
 
     fun generate(nonEquality: BinaryExpression.NonEqualityExpression) {
-        evaluateOperation(nonEquality, Opcodes.IF_ACMPNE)
-
+        booleanExpressionGenerator.generate(nonEquality, CompareSign.NOT_EQUALS)
     }
+
 
     fun generate(or: BinaryExpression.LogicalOrExpression) {
         evaluateOperation(or, Opcodes.IOR)

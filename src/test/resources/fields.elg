@@ -1,11 +1,11 @@
 class FieldsTest {
-    fun start() :int {
-        print(10)
-        return 10 + 1
+    fun start() {
+        a: boolean = true
+        b: boolean = false
+        print(a && b || false || 2 >= 2 )
      }
 
     fun main() {
-        a:int = 10
-        print(a)
+        start()
     }
 }

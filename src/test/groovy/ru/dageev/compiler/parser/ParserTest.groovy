@@ -105,7 +105,7 @@ class ParserTest extends GroovyTestCase {
     @Test
     void testShouldFailForCallPrivateParentMethods() {
         def source = """
-        class First { private fun privateMethod(a:int): int { } }
+        class First { private fun privateMethod(a:int): int { return a } }
         class Second: First {
             fun function() {
                a: int = privateMethod(100)
@@ -196,7 +196,7 @@ class ParserTest extends GroovyTestCase {
     void testShouldFailForDeclarationVariableWithVoidType() {
         def source = """
         class First {
-            fun function() {Constructor signature 'public First(int): First' already exists for First
+            fun function() {
                 a:void = 100
             }         
         }
@@ -287,6 +287,7 @@ class ParserTest extends GroovyTestCase {
         expectException(source, "Incorrect right expression type for operation '+'. Expected 'int', found 'boolean'")
     }
 
+    @Test
     void testShouldFailForNonBooleanArgumentInLogicalOperation() {
         def source = """
         class First {
@@ -296,6 +297,77 @@ class ParserTest extends GroovyTestCase {
         expectException(source, "Incorrect left expression type for operation '&&'. Expected 'boolean', found 'First'")
     }
 
+
+    @Test
+    void testShouldFailForNonVoidMethodWithoutReturn() {
+        def source = """
+        class First {
+           fun function():int { }
+        }
+                    """
+        expectException(source, "Method public function(): int should have return statement at the end")
+    }
+
+
+    @Test
+    void testShouldFailForNonVoidMethodWithoutReturnInElseSection() {
+        def source = """
+        class First {
+           fun function():int { 
+              if (2 > 3) {
+                return 10;
+              } else { 
+              }
+           }
+        }
+                    """
+        expectException(source, "Method public function(): int should have return statement at the end")
+    }
+
+    @Test
+    void testShouldFailForNonVoidMethodWithoutReturnInWhileSection() {
+        def source = """
+        class First {
+           fun function():int { 
+              while(2 > 3) {              
+              }
+           }
+        }
+                    """
+        expectException(source, "Method public function(): int should have return statement at the end")
+    }
+
+    @Test
+    void testShouldBeOkForReturnInIfStatement() {
+        def source = """
+        class First {
+           fun function():int { 
+              if (2 > 3) {
+                return 10
+              } else { 
+                return 30
+              }
+           }
+        }
+                    """
+        parser.parseCode(source)
+
+    }
+
+    @Test
+    void testShouldBeOkForReturnInWhileStatement() {
+        def source = """
+        class First {
+           fun function():int { 
+              while(2 > 3) {  
+                return 10;            
+              }
+           }
+        }
+                    """
+        parser.parseCode(source)
+
+    }
 
     private void expectException(String source, String expectedMessage) {
         def message = shouldFail(CompilationException) {
