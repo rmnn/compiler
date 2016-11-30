@@ -23,7 +23,7 @@ class MethodGenerator(val classesContext: ClassesContext, val classWriter: Class
         val (access, descriptor) = if (isMainMethod(method.methodSignature)) {
             Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC to getMainMethodDescriptor()
         } else {
-            method.methodSignature.accessModifier.opCode to method.methodSignature.getDescriptor()
+            method.methodSignature.accessModifier.opCode + Opcodes.ACC_STATIC to method.methodSignature.getDescriptor()
         }
 
         val methodVisitor = classWriter.visitMethod(access, method.methodSignature.name, descriptor, null, null)
