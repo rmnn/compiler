@@ -9,6 +9,7 @@ import ru.dageev.compiler.grammar.ElaginParser
 import ru.dageev.compiler.parser.CompilationException
 import ru.dageev.compiler.parser.helper.assertCorrectVariableReference
 import ru.dageev.compiler.parser.visitor.expression.ExpressionVisitor
+import java.util.*
 
 /**
  * Created by dageev
@@ -28,7 +29,7 @@ class AssignmentStatementVisitor(scope: Scope, val classesContext: ClassesContex
             val expr = ctx.classExpr.accept(expressionVisitor)
             if (expr.type is ClassType) {
                 assertCorrectVariableReference(classesContext, scope, expr.type, name)
-                expr.type
+                Optional.of(expr.type)
             } else {
                 throw CompilationException("Unable to get field of primitive type for $name")
             }
@@ -36,7 +37,7 @@ class AssignmentStatementVisitor(scope: Scope, val classesContext: ClassesContex
             if (scope.localVariables[name] == null) {
                 assertCorrectVariableReference(classesContext, scope, ClassType(scope.className), name)
             }
-            ClassType(scope.className)
+            Optional.empty()
         }
 
         return Assignment(classType, name, expression)

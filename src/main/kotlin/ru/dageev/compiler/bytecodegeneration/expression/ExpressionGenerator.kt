@@ -23,7 +23,7 @@ class ExpressionGenerator(val scope: Scope, val classesContext: ClassesContext, 
         parameterExpressionGenerator = ParameterExpressionGenerator(scope, methodVisitor)
         valueExpressionGenerator = ValueExpressionGenerator(methodVisitor)
         callGenerator = CallGenerator(scope, classesContext, this, methodVisitor)
-        fieldAccessGenerator = FieldAccessGenerator(methodVisitor)
+        fieldAccessGenerator = FieldAccessGenerator(scope, methodVisitor)
         binaryOperationGenerator = BinaryOperationGenerator(this, methodVisitor)
     }
 

@@ -369,6 +369,55 @@ class ParserTest extends GroovyTestCase {
 
     }
 
+    @Test
+    void testShouldFailForCallSuperMethodWithoutParentClass() {
+        def source = """
+        class First {
+            constructor() {
+                super()
+            }
+        }
+                    """
+        expectException(source, "Could not make super() call for class without parent in class First")
+    }
+
+    @Test
+    void testShouldFailForCallSuperMethodForParentPrivateConstructor() {
+        def source = """
+        class First {
+            private constructor(a: int) {
+                
+            }
+        }
+        
+        class Second: First{
+            constructor() {
+                super(10)
+            }
+        }
+                    """
+        expectException(source, "Unable to call parent 'First' class private constructor")
+    }
+
+
+    @Test
+    void testShouldFailForCallSuperMethodForNotExistingParentConstructor() {
+        def source = """
+        class First {
+            constructor(a: int) {
+                
+            }
+        }
+        
+        class Second: First{
+            constructor() {
+                super(true)
+            }
+        }
+                    """
+        expectException(source, "Constructor 'First[boolean]' not found for class 'Second'")
+    }
+
     private void expectException(String source, String expectedMessage) {
         def message = shouldFail(CompilationException) {
             parser.parseCode(source)

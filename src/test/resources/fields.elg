@@ -1,11 +1,13 @@
 class FieldsTest {
-    fun start() {
-        a: boolean = true
-        b: boolean = false
-        print(a && b || false || 2 >= 2 )
-     }
+    fun readAndPrint() {
+        a: int = 10
+        read(a)
+        print(a)
+    }
 
-    fun main() {
-        start()
+    fun main () {
+        f: FieldsTest = new FieldsTest()
+        f.readAndPrint()
     }
 }
+

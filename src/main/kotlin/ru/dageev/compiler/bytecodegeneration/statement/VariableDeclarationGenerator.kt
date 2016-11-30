@@ -4,7 +4,7 @@ import ru.dageev.compiler.bytecodegeneration.expression.ExpressionGenerator
 import ru.dageev.compiler.domain.node.statement.Assignment
 import ru.dageev.compiler.domain.node.statement.VariableDeclaration
 import ru.dageev.compiler.domain.scope.Scope
-import ru.dageev.compiler.domain.type.ClassType
+import java.util.*
 
 /**
  * Created by dageev
@@ -14,7 +14,7 @@ class VariableDeclarationGenerator(val scope: Scope, val statementGenerator: Sta
 
     fun generate(variableDeclaration: VariableDeclaration) {
         variableDeclaration.expression.accept(expressionGenerator)
-        val assignment = Assignment(ClassType(scope.className), variableDeclaration.name, variableDeclaration.expression)
+        val assignment = Assignment(Optional.empty(), variableDeclaration.name, variableDeclaration.expression)
         assignment.accept(statementGenerator)
     }
 }

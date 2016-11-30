@@ -41,6 +41,8 @@ class MethodCallExpressionVisitor(scope: Scope, val classesContext: ClassesConte
 
     override fun visitSuperCall(ctx: ElaginParser.SuperCallContext): Call {
         val arguments = getArgumentsForCall(ctx.expressionList())
+        if (scope.parentClassName == null) throw CompilationException("Could not make super() call for class without parent in class ${scope.className}")
+        checkConstructorExists(scope.className, scope, arguments, false)
         return Call.SuperCall(arguments, ClassType(scope.className))
     }
 
@@ -85,11 +87,34 @@ class MethodCallExpressionVisitor(scope: Scope, val classesContext: ClassesConte
         return Call.ConstructorCall(className, arguments)
     }
 
+
+    fun checkConstructorExists(childClass: String, scope: Scope, arguments: List<Argument>, skipChildClass: Boolean = false): MethodSignature {
+        val constructorCallSignature = scope.getConstructorCallSignature(arguments)
+        return if (constructorCallSignature.isPresent) {
+            if ((scope.className == childClass && !skipChildClass) || constructorCallSignature.get().accessModifier == AccessModifier.PRIVATE) {
+                throw  CompilationException("Unable to call parent '${scope.className}' class private constructor")
+            }
+            constructorCallSignature.get()
+        } else {
+            if (scope.parentClassName != null) {
+                val parentScope = classesContext.getClassScope(scope.parentClassName)
+                checkConstructorExists(childClass, parentScope, arguments)
+            } else {
+                throw CompilationException("Constructor '${scope.className}${arguments.map { it.type.getTypeName() }}' not found for class '$childClass'")
+            }
+        }
+    }
+
+
     private fun getOwnerAndScope(ctx: ElaginParser.MethodCallContext): Pair<Expression, Scope> {
         return if (ctx.classRef != null) {
             val classRefExpression = ctx.classRef.accept(expressionVisitor)
             if (classRefExpression.type is ClassType) {
-                classRefExpression to classesContext.getClassScope(classRefExpression.type.getTypeName())
+                if (scope.className == classRefExpression.type.getTypeName()) {
+                    classRefExpression to scope
+                } else {
+                    classRefExpression to classesContext.getClassScope(classRefExpression.type.getTypeName())
+                }
             } else {
                 throw CompilationException("Unable to call methods for primitive types for")
             }

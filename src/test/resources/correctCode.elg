@@ -9,7 +9,6 @@ class First {
     }
 
     private constructor(in: int) {
-        super()
         b = in
     }
 
@@ -33,6 +32,10 @@ class First {
 }
 
 class Second: First {
+
+    constructor() {
+        super(2 > 10)
+    }
 
     fun secondFun1() {
         fun2()

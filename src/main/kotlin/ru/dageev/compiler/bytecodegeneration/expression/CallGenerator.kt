@@ -21,12 +21,12 @@ class CallGenerator(val scope: Scope, val classesContext: ClassesContext, val ex
         if (!signature.isPresent) {
             throw CompilationException("Unable to find constructor for $constructorCall")
         } else {
-            val ownerDescriptor = ClassType(signature.get().name).getDescriptor()
+            val ownerDescriptor = ClassType(signature.get().name).getInternalName()
             methodVisitor.visitTypeInsn(Opcodes.NEW, ownerDescriptor)
             methodVisitor.visitInsn(Opcodes.DUP)
             val methodDescriptor = signature.get().getDescriptor()
             generateArguments(constructorCall)
-            methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, ownerDescriptor, "<init>", methodDescriptor, false)
+            methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, ownerDescriptor, "<init>", methodDescriptor, false)
         }
     }
 
@@ -36,7 +36,7 @@ class CallGenerator(val scope: Scope, val classesContext: ClassesContext, val ex
         generateArguments(methodCall)
         val methodDescriptor = methodCall.methodSignature.getDescriptor()
         val ownerDescriptor = methodCall.owner.type.getInternalName()
-        methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, ownerDescriptor, methodCall.methodSignature.name, methodDescriptor, false)
+        methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, ownerDescriptor, methodCall.methodSignature.name, methodDescriptor, false)
     }
 
     fun generate(superCall: Call.SuperCall) {

@@ -8,7 +8,6 @@ import ru.dageev.compiler.domain.scope.Scope
 import ru.dageev.compiler.domain.type.ClassType
 import ru.dageev.compiler.domain.type.PrimitiveType
 import ru.dageev.compiler.domain.type.Type
-import ru.dageev.compiler.parser.CompilationException
 import ru.dageev.compiler.parser.helper.getField
 
 
@@ -19,26 +18,31 @@ import ru.dageev.compiler.parser.helper.getField
 class ReadStatementGenerator(val scope: Scope, val classesContext: ClassesContext, val methodVisitor: MethodVisitor) {
 
     fun generate(readStatement: ReadStatement) {
-        this.methodVisitor.visitTypeInsn(Opcodes.NEW, "java/util/Scanner")
-        this.methodVisitor.visitInsn(Opcodes.DUP)
+        createScanner()
+        printQueryForInput()
 
-        this.methodVisitor.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "in", "Ljava/io/InputStream;")
-        this.methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/util/Scanner", "<init>", "(Ljava/io/InputStream;)V", false)
-
-        this.methodVisitor.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;")
-        this.methodVisitor.visitLdcInsn(readStatement.varName)
-        val type = getReadFieldType(readStatement.varName)
-        methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", type.getDescriptor(), false)
-
-
-        when (type) {
-            PrimitiveType.BOOLEAN -> methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/Scanner", "nextBoolean", type.getDescriptor(), false)
-            PrimitiveType.INT -> methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/Scanner", "nextInt", type.getDescriptor(), false);
-            else -> throw CompilationException("Unsupported type for read $type")
+        when (getReadFieldType(readStatement.varName)) {
+            PrimitiveType.BOOLEAN -> this.methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/Scanner", "nextBoolean", "()Z", false)
+            PrimitiveType.INT -> this.methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/Scanner", "nextInt", "()I", false)
         }
 
-        visitStoreVariable(readStatement.varName);
+        visitStoreVariable(readStatement.varName)
 
+    }
+
+    private fun createScanner() {
+        methodVisitor.visitTypeInsn(Opcodes.NEW, "java/util/Scanner");
+        methodVisitor.visitInsn(Opcodes.DUP)
+        methodVisitor.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "in", "Ljava/io/InputStream;")
+        methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/util/Scanner", "<init>", "(Ljava/io/InputStream;)V", false)
+    }
+
+    private fun printQueryForInput() {
+        methodVisitor.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;")
+        methodVisitor.visitLdcInsn("Enter a value:")
+        val descriptor = "(" + ClassType(String::class.java.name).getDescriptor() + ")V"
+        val fieldDescriptor = ClassType("java.io.PrintStream").getDescriptor()
+        methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, fieldDescriptor, "println", descriptor, false)
     }
 
     private fun getReadFieldType(varName: String): Type {
@@ -52,7 +56,7 @@ class ReadStatementGenerator(val scope: Scope, val classesContext: ClassesContex
 
         if (location < 0) {
             val field = getField(classesContext, scope, ClassType(scope.className), varName).get()
-            this.methodVisitor.visitVarInsn(Opcodes.ALOAD, location)
+            this.methodVisitor.visitVarInsn(Opcodes.ALOAD, 0)
             this.methodVisitor.visitInsn(Opcodes.SWAP)
 
             this.methodVisitor.visitFieldInsn(Opcodes.PUTFIELD, field.ownerType.getInternalName(), field.name, field.type.getDescriptor())

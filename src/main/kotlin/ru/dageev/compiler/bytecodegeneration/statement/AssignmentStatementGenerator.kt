@@ -18,15 +18,15 @@ import ru.dageev.compiler.parser.helper.getField
 class AssignmentStatementGenerator(val scope: Scope, val classesContext: ClassesContext, val methodVisitor: MethodVisitor, val expressionGenerator: ExpressionGenerator) {
 
     fun generate(assignment: Assignment) {
-        if (scope.localVariables.containsKey(assignment.varName)) {
+        if (scope.localVariables.containsKey(assignment.varName) && !assignment.classType.isPresent) {
             val index = scope.localVariables.indexOf(assignment.varName)
-            val localVariable = scope.localVariables.get(assignment.varName)!!
+            val localVariable = scope.localVariables[assignment.varName]!!
             val type = assignment.expression.type
             castIfNecessary(type, localVariable.type)
             methodVisitor.visitVarInsn(type.getStoreVariableOpcode(), index)
             return
         } else {
-            val fieldOptional = getField(classesContext, scope, ClassType(scope.className), assignment.varName)
+            val fieldOptional = getField(classesContext, scope, assignment.classType.orElseGet { ClassType(scope.className) }, assignment.varName)
             if (!fieldOptional.isPresent) {
                 throw CompilationException("Unable to find variable for assignment $assignment")
             }
