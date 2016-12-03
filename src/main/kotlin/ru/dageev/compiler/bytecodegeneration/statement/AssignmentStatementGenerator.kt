@@ -40,7 +40,7 @@ class AssignmentStatementGenerator(val scope: Scope, val classesContext: Classes
     }
 
     private fun castIfNecessary(expressionType: Type, variableType: Type) {
-        if (expressionType != variableType) {
+        if (expressionType.getTypeName() != variableType.getTypeName()) {
             methodVisitor.visitTypeInsn(Opcodes.CHECKCAST, variableType.getInternalName())
         }
     }

@@ -1,13 +1,19 @@
 class FieldsTest {
-    fun readAndPrint() {
-        a: int = 10
-        read(a)
-        print(a)
+
+    b: int
+    constructor() {
+        b = 10
     }
 
+    fun print10() {
+        print(10)
+    }
+}
+
+class Second {
     fun main () {
-        f: FieldsTest = new FieldsTest()
-        f.readAndPrint()
+          a:FieldsTest = new FieldsTest()
+          a.print10()
     }
 }
 

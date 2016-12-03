@@ -15,12 +15,13 @@ class ClassGenerator(val classesContext: ClassesContext) {
 
     fun generate(classDeclaration: ClassDeclaration): ByteArray {
         val classWriter = ClassWriter(ClassWriter.COMPUTE_FRAMES + ClassWriter.COMPUTE_MAXS)
-        classWriter.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, classDeclaration.name, null, "java/lang/Object", null)
+        classWriter.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, classDeclaration.name, null,
+                classDeclaration.parentClassDeclaration.map { it.name }.orElseGet { "java/lang/Object" }, null)
 
-        val fieldGenerator = FieldGenerator(classWriter)
+        val fieldGenerator = FieldGenerator(classesContext.toScope(classDeclaration), classesContext, classWriter)
         classDeclaration.fields.forEach { it.accept(fieldGenerator) }
 
-        val constructorGenerator = ConstructorGenerator(classesContext, classWriter)
+        val constructorGenerator = ConstructorGenerator(classesContext, classWriter, classDeclaration.parentClassDeclaration.map { it.name }.orElse("java.lang.Object"))
         classDeclaration.constructors.forEach { it.accept(constructorGenerator) }
 
         val methodGenerator = MethodGenerator(classesContext, classWriter)

@@ -114,7 +114,6 @@ class ExpressionGenerator(val scope: Scope, val classesContext: ClassesContext, 
     }
 
     fun generate(emptyExpression: EmptyExpression) {
-
     }
 
 

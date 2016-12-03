@@ -12,7 +12,7 @@ import ru.dageev.compiler.domain.type.ClassType
  * Created by dageev
  * on 11/26/16.
  */
-class ConstructorGenerator(val classesContext: ClassesContext, val classWriter: ClassWriter) : AbstractMethodGenerator() {
+class ConstructorGenerator(val classesContext: ClassesContext, val classWriter: ClassWriter, val parentClass: String) : AbstractMethodGenerator() {
 
     fun generate(constructor: MethodDeclaration.ConstructorDeclaration) {
         val descriptor = constructor.methodSignature.getDescriptor()
@@ -23,7 +23,7 @@ class ConstructorGenerator(val classesContext: ClassesContext, val classWriter: 
 
         val generator = StatementGenerator(block.scope, classesContext, methodVisitor)
         if (block.statements.none { it is Call.SuperCall }) {
-            Call.SuperCall(emptyList(), ClassType("java.lang.Object")).accept(generator)
+            Call.SuperCall(emptyList(), ClassType(parentClass)).accept(generator)
         }
         constructor.statement.accept(generator)
         appendReturnIfNotExists(constructor, block, generator)

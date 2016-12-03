@@ -36,14 +36,14 @@ class CallGenerator(val scope: Scope, val classesContext: ClassesContext, val ex
         generateArguments(methodCall)
         val methodDescriptor = methodCall.methodSignature.getDescriptor()
         val ownerDescriptor = methodCall.owner.type.getInternalName()
-        methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, ownerDescriptor, methodCall.methodSignature.name, methodDescriptor, false)
+        methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, ownerDescriptor, methodCall.methodSignature.name, methodDescriptor, false)
     }
 
     fun generate(superCall: Call.SuperCall) {
         methodVisitor.visitVarInsn(Opcodes.ALOAD, 0)
         generateArguments(superCall)
         val ownerDescriptor = superCall.type.getInternalName()
-        methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, ownerDescriptor, "<init>", "()V" /*TODO Handle super calls with arguments*/, false)
+        methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, ownerDescriptor, "<init>", "()V", false)
     }
 
     private fun getConstructor(constructorCallExpression: Call.ConstructorCall): Optional<MethodSignature> {

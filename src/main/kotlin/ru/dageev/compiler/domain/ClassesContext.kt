@@ -25,7 +25,7 @@ class ClassesContext(val classes: MutableMap<String, ClassDeclaration> = mutable
     fun getAllScopes() = classes.values.map { toScope(it) }
 
 
-    private fun toScope(classDecl: ClassDeclaration): Scope {
+    fun toScope(classDecl: ClassDeclaration): Scope {
         return Scope(className = classDecl.name, parentClassName = getParentClassName(classDecl), fields = mutableMapOf(*classDecl.fields.map { it.name to it }.toTypedArray()),
                 methodSignatures = classDecl.methods.map { it.methodSignature }.toMutableList(), constructorSignatures = classDecl.constructors.map { it.methodSignature }.toMutableList())
     }
