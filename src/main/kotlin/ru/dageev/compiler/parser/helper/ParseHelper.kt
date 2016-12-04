@@ -2,6 +2,8 @@ package ru.dageev.compiler.parser.helper
 
 import ru.dageev.compiler.domain.AccessModifier
 import ru.dageev.compiler.domain.ClassesContext
+import ru.dageev.compiler.domain.declaration.MethodDeclaration
+import ru.dageev.compiler.domain.node.statement.Block
 import ru.dageev.compiler.domain.scope.Field
 import ru.dageev.compiler.domain.scope.MethodSignature
 import ru.dageev.compiler.domain.scope.Scope
@@ -58,6 +60,15 @@ fun getFieldWithScope(classesContext: ClassesContext, scope: Scope, type: Type, 
             scope to Optional.empty()
         }
     }
+}
+
+
+fun getDefaultConstructor(scope: Scope): MethodDeclaration.ConstructorDeclaration {
+    return MethodDeclaration.ConstructorDeclaration(getDefaultConstructorSignature(scope), Block(scope, emptyList()))
+}
+
+fun getDefaultConstructorSignature(scope: Scope): MethodSignature {
+    return MethodSignature(AccessModifier.PUBLIC, scope.className, emptyList(), PrimitiveType.VOID)
 }
 
 

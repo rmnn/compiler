@@ -14,6 +14,7 @@ class CompilationUnitGenerator() {
     fun generate(compilationUnit: CompilationUnit): Map<String, ByteArray> {
         val classesContext = ClassesContext(compilationUnit.classDeclarations.map { it.name to it }.toMap() as MutableMap<String, ClassDeclaration>)
         val classGenerator = ClassGenerator(classesContext)
-        return compilationUnit.classDeclarations.map { it.name to classGenerator.generate(it) }.toMap()
+        val mainProgramClass = compilationUnit.mainClassDeclaration.name to classGenerator.generate(compilationUnit.mainClassDeclaration, true)
+        return (compilationUnit.classDeclarations.map { it.name to classGenerator.generate(it) } + mainProgramClass).toMap()
     }
 }

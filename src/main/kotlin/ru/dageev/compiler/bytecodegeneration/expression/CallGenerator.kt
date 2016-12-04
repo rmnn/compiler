@@ -31,12 +31,13 @@ class CallGenerator(val scope: Scope, val classesContext: ClassesContext, val ex
     }
 
 
-    fun generate(methodCall: Call.MethodCall) {
+    fun generate(methodCall: Call.MethodCall, forMainClass: Boolean) {
         methodCall.owner.accept(expressionGenerator)
         generateArguments(methodCall)
         val methodDescriptor = methodCall.methodSignature.getDescriptor()
         val ownerDescriptor = methodCall.owner.type.getInternalName()
-        methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, ownerDescriptor, methodCall.methodSignature.name, methodDescriptor, false)
+        val invokeCode = if (forMainClass && methodCall.owner.type != ClassType(scope.className)) Opcodes.INVOKESTATIC else Opcodes.INVOKEVIRTUAL
+        methodVisitor.visitMethodInsn(invokeCode, ownerDescriptor, methodCall.methodSignature.name, methodDescriptor, false)
     }
 
     fun generate(superCall: Call.SuperCall) {

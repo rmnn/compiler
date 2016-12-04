@@ -4,7 +4,7 @@ grammar Elagin;
    package ru.dageev.compiler.grammar;
 }
 
-compilationUnit : (classDeclaration)*
+compilationUnit : (classDeclaration)* (methodDeclaration)*
     ;
 
 accessModifier
@@ -33,7 +33,7 @@ constructorDeclaration
     ;
 
 fieldDeclaration
-    :   (accessModifier)? identifier ':' type
+    :   (accessModifier)? 'var' identifier ':' type
     ;
 
 type
@@ -84,7 +84,7 @@ statement : block
            | expression ;
 
 localVariableDeclarationStatement
-    :  identifier ':' type '=' expression
+    :  'var' identifier ':' type '=' expression
     ;
 
 

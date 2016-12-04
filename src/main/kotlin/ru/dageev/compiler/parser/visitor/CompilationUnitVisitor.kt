@@ -7,10 +7,11 @@ import ru.dageev.compiler.domain.declaration.ClassDeclaration
 import ru.dageev.compiler.domain.declaration.MethodDeclaration
 import ru.dageev.compiler.domain.node.statement.Block
 import ru.dageev.compiler.domain.scope.MethodSignature
+import ru.dageev.compiler.domain.scope.Scope
 import ru.dageev.compiler.domain.type.ClassType
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
-import ru.dageev.compiler.parser.CompilationException
+import ru.dageev.compiler.parser.helper.getDefaultConstructor
 import ru.dageev.compiler.parser.helper.getMainMethodSignature
 import ru.dageev.compiler.parser.provider.TypeProvider
 
@@ -33,33 +34,45 @@ class CompilationUnitVisitor : ElaginBaseVisitor<CompilationUnit>() {
             classDecl
         }.toMutableList()
 
-        checkMainMethods(classesContext, classes)
-        return CompilationUnit(classes)
+        val classDeclaration = processMethodWithoutClass(typeProvider, classesContext, ctx)
+        return CompilationUnit(classes, classDeclaration)
     }
 
-    private fun checkMainMethods(classesContext: ClassesContext, classes: MutableList<ClassDeclaration>) {
+    fun processMethodWithoutClass(typeProvider: TypeProvider, classesContext: ClassesContext, ctx: ElaginParser.CompilationUnitContext): ClassDeclaration {
+        val scope = Scope("ElaginProgram", null)
+        val methods = getMethods(classesContext, ctx, scope, typeProvider)
+
+        val classDeclaration = ClassDeclaration("ElaginProgram", emptyList(), methods, listOf(getDefaultConstructor(scope)))
+        return checkAndPatchForMainMethodMainClass(scope, classesContext, classDeclaration)
+    }
+
+    private fun getMethods(classesContext: ClassesContext, ctx: ElaginParser.CompilationUnitContext, scope: Scope, typeProvider: TypeProvider): List<MethodDeclaration> {
+        return if (ctx.methodDeclaration() != null) {
+            val methodSignatureVisitor = MethodSignatureVisitor(scope, typeProvider, classesContext)
+            ctx.methodDeclaration().map { method -> method.accept(methodSignatureVisitor) }.forEach {
+                scope.addSignature(it)
+            }
+
+            val methodVisitor = MethodVisitor(scope, typeProvider, classesContext)
+            ctx.methodDeclaration().map { method -> method.accept(methodVisitor) }
+        } else {
+            emptyList()
+        }
+    }
+
+    private fun checkAndPatchForMainMethodMainClass(scope: Scope, classesContext: ClassesContext, classDeclaration: ClassDeclaration): ClassDeclaration {
         val mainMethodSignature = getMainMethodSignature()
-        val mainMethodCount = classesContext.getAllScopes().count { scope ->
-            scope.signatureExists(mainMethodSignature)
-        }
-        if (mainMethodCount > 1) {
-            throw CompilationException("Found more than 1 main method");
-        }
-
-        if (mainMethodCount == 0 && classesContext.classes.isNotEmpty()) {
-            addStubMainMethod(classesContext, mainMethodSignature, classes)
+        val mainMethodExists = classesContext.toScope(classDeclaration).signatureExists(mainMethodSignature)
+        return if (!mainMethodExists) {
+            addStubMainMethod(mainMethodSignature, scope, classDeclaration)
+        } else {
+            classDeclaration
         }
     }
 
-    private fun addStubMainMethod(classesContext: ClassesContext, mainMethodSignature: MethodSignature, classes: MutableList<ClassDeclaration>) {
-        val firstKey = classesContext.classes.keys.first()
-        val classDecl = classesContext.classes[firstKey]!!
-        val methods = classDecl.methods + MethodDeclaration(mainMethodSignature, Block(classesContext.getClassScope(firstKey), emptyList()))
-        val patchedClassDeclaration = ClassDeclaration(classDecl.name, classDecl.fields, methods, classDecl.constructors, classDecl.parentClassDeclaration)
-        classesContext.classes.put(firstKey, patchedClassDeclaration)
-
-        classes.remove(classes.find { it.name == firstKey })
-        classes.add(patchedClassDeclaration)
+    private fun addStubMainMethod(mainMethodSignature: MethodSignature, scope: Scope, classDecl: ClassDeclaration): ClassDeclaration {
+        val methods = classDecl.methods + MethodDeclaration(mainMethodSignature, Block(scope, emptyList()))
+        return ClassDeclaration(classDecl.name, classDecl.fields, methods, classDecl.constructors, classDecl.parentClassDeclaration)
     }
 
     private fun createTypeProvider(classDeclarationContext: List<ElaginParser.ClassDeclarationContext>): TypeProvider {

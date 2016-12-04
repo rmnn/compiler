@@ -9,7 +9,7 @@ import ru.dageev.compiler.domain.scope.Scope
  * Created by dageev
  * on 11/26/16.
  */
-class ExpressionGenerator(val scope: Scope, val classesContext: ClassesContext, val methodVisitor: MethodVisitor) {
+class ExpressionGenerator(val scope: Scope, val classesContext: ClassesContext, val methodVisitor: MethodVisitor, val forMainClass: Boolean) {
 
     val fieldReferenceGenerator: FieldReferenceGenerator
     val parameterExpressionGenerator: ParameterExpressionGenerator
@@ -48,7 +48,7 @@ class ExpressionGenerator(val scope: Scope, val classesContext: ClassesContext, 
     }
 
     fun generate(methodCall: Call.MethodCall) {
-        callGenerator.generate(methodCall)
+        callGenerator.generate(methodCall, forMainClass)
     }
 
     fun generate(superCall: Call.SuperCall) {

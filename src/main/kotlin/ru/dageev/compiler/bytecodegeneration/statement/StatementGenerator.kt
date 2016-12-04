@@ -11,7 +11,7 @@ import ru.dageev.compiler.domain.scope.Scope
  * Created by dageev
  * on 11/26/16.
  */
-class StatementGenerator(scope: Scope, classesContext: ClassesContext, methodVisitor: MethodVisitor) {
+class StatementGenerator(scope: Scope, classesContext: ClassesContext, methodVisitor: MethodVisitor, forMainClass: Boolean = false) {
 
     val expressionGenerator: ExpressionGenerator
     val printStatementGenerator: PrintStatementGenerator
@@ -25,7 +25,7 @@ class StatementGenerator(scope: Scope, classesContext: ClassesContext, methodVis
 
 
     init {
-        expressionGenerator = ExpressionGenerator(scope, classesContext, methodVisitor)
+        expressionGenerator = ExpressionGenerator(scope, classesContext, methodVisitor, forMainClass)
         printStatementGenerator = PrintStatementGenerator(methodVisitor, expressionGenerator)
         variableDeclarationGenerator = VariableDeclarationGenerator(scope, this, expressionGenerator)
         assignmentStatementGenerator = AssignmentStatementGenerator(scope, classesContext, methodVisitor, expressionGenerator)

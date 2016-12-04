@@ -15,20 +15,22 @@ import ru.dageev.compiler.parser.matcher.MethodSignatureMatcher
  * Created by dageev
  * on 11/26/16.
  */
-class MethodGenerator(val classesContext: ClassesContext, val classWriter: ClassWriter) : AbstractMethodGenerator() {
+class MethodGenerator(val classesContext: ClassesContext, val classWriter: ClassWriter, val forMainClass: Boolean = false) : AbstractMethodGenerator() {
 
 
     fun generate(method: MethodDeclaration) {
         val block = method.statement as Block
-        val (access, descriptor) = if (isMainMethod(method.methodSignature)) {
-            Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC to getMainMethodDescriptor()
+        val (access, descriptor) = if (forMainClass) {
+            Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC to
+                    if (isMainMethod(method.methodSignature)) getMainMethodDescriptor()
+                    else method.methodSignature.getDescriptor()
         } else {
             method.methodSignature.accessModifier.opCode to method.methodSignature.getDescriptor()
         }
 
         val methodVisitor = classWriter.visitMethod(access, method.methodSignature.name, descriptor, null, null)
         methodVisitor.visitCode()
-        val statementGenerator = StatementGenerator(block.scope, classesContext, methodVisitor)
+        val statementGenerator = StatementGenerator(block.scope, classesContext, methodVisitor, forMainClass)
         block.accept(statementGenerator)
         appendReturnIfNotExists(method, block, statementGenerator)
         methodVisitor.visitMaxs(-1, -1)

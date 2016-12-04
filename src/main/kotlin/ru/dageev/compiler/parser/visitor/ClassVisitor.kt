@@ -1,18 +1,16 @@
 package ru.dageev.compiler.parser.visitor
 
 import org.antlr.v4.runtime.misc.NotNull
-import ru.dageev.compiler.domain.AccessModifier
 import ru.dageev.compiler.domain.ClassesContext
 import ru.dageev.compiler.domain.declaration.ClassDeclaration
 import ru.dageev.compiler.domain.declaration.MethodDeclaration
-import ru.dageev.compiler.domain.node.statement.Block
 import ru.dageev.compiler.domain.scope.Field
-import ru.dageev.compiler.domain.scope.MethodSignature
 import ru.dageev.compiler.domain.scope.Scope
-import ru.dageev.compiler.domain.type.PrimitiveType
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
 import ru.dageev.compiler.parser.CompilationException
+import ru.dageev.compiler.parser.helper.getDefaultConstructor
+import ru.dageev.compiler.parser.helper.getDefaultConstructorSignature
 import ru.dageev.compiler.parser.provider.TypeProvider
 import java.util.*
 
@@ -52,16 +50,13 @@ class ClassVisitor(val typeProvider: TypeProvider, val classesContext: ClassesCo
 
     private fun processConstructors(ctx: ElaginParser.ClassDeclarationContext): List<MethodDeclaration.ConstructorDeclaration> {
         return if (ctx.classBody().constructorDeclaration().isEmpty()) {
-            listOf(getDefaultConstructor())
+            listOf(getDefaultConstructor(scope))
         } else {
             ctx.classBody().constructorDeclaration().map { constructor -> constructor.accept(ConstructorVisitor(scope, typeProvider, classesContext)) }
         }
 
     }
 
-    private fun getDefaultConstructor(): MethodDeclaration.ConstructorDeclaration {
-        return MethodDeclaration.ConstructorDeclaration(getDefaultConstructorSignature(), Block(scope, emptyList()))
-    }
 
     private fun registerMethodSignatures(ctx: ElaginParser.ClassDeclarationContext) {
         val methodSignatureVisitor = MethodSignatureVisitor(scope, typeProvider, classesContext)
@@ -74,14 +69,9 @@ class ClassVisitor(val typeProvider: TypeProvider, val classesContext: ClassesCo
         }
 
         if (ctx.classBody().constructorDeclaration().isEmpty()) {
-            scope.addConstructorSignature(getDefaultConstructorSignature())
+            scope.addConstructorSignature(getDefaultConstructorSignature(scope))
         }
     }
-
-    private fun getDefaultConstructorSignature(): MethodSignature {
-        return MethodSignature(AccessModifier.PUBLIC, scope.className, emptyList(), PrimitiveType.VOID)
-    }
-
 
     private fun processFields(ctx: ElaginParser.ClassDeclarationContext): List<Field> {
         val fields = ctx.classBody().fieldDeclaration().map { field ->
