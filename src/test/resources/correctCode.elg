@@ -79,6 +79,6 @@ fun main() {
 }
 
 fun classCreation() {
-    var a: First = new First(false)
-    var c: First = new Second()
+    var a = new First(false)
+    var c = new Second()
 }

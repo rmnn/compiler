@@ -31,7 +31,7 @@ class CallGenerator(val scope: Scope, val classesContext: ClassesContext, val ex
     }
 
 
-    fun generate(methodCall: Call.MethodCall, forMainClass: Boolean) {
+    fun generate(methodCall: Call.MethodCall) {
         methodCall.owner.accept(expressionGenerator)
         generateArguments(methodCall)
         val methodDescriptor = methodCall.methodSignature.getDescriptor()

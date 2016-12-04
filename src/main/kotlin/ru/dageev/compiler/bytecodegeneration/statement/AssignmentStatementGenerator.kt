@@ -7,7 +7,6 @@ import ru.dageev.compiler.domain.ClassesContext
 import ru.dageev.compiler.domain.node.statement.Assignment
 import ru.dageev.compiler.domain.scope.Scope
 import ru.dageev.compiler.domain.type.ClassType
-import ru.dageev.compiler.domain.type.Type
 import ru.dageev.compiler.parser.CompilationException
 import ru.dageev.compiler.parser.helper.getField
 
@@ -22,7 +21,6 @@ class AssignmentStatementGenerator(val scope: Scope, val classesContext: Classes
             val index = scope.localVariables.indexOf(assignment.varName)
             val localVariable = scope.localVariables[assignment.varName]!!
             val type = assignment.expression.type
-            castIfNecessary(type, localVariable.type)
             methodVisitor.visitVarInsn(type.getStoreVariableOpcode(), index)
             return
         } else {
@@ -34,14 +32,9 @@ class AssignmentStatementGenerator(val scope: Scope, val classesContext: Classes
             val descriptor = field.type.getDescriptor()
             methodVisitor.visitVarInsn(Opcodes.ALOAD, 0)
             assignment.expression.accept(expressionGenerator)
-            castIfNecessary(assignment.expression.type, field.type)
             methodVisitor.visitFieldInsn(Opcodes.PUTFIELD, field.ownerType.getInternalName(), field.name, descriptor)
         }
     }
 
-    private fun castIfNecessary(expressionType: Type, variableType: Type) {
-        if (expressionType.getTypeName() != variableType.getTypeName()) {
-            methodVisitor.visitTypeInsn(Opcodes.CHECKCAST, variableType.getInternalName())
-        }
-    }
+
 }
