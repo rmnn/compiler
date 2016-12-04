@@ -1,7 +1,7 @@
 class First {
-    a : boolean
-    public b: int
-    private c: First
+    var a : boolean
+    public var b: int
+    private var c: First
 
     public constructor(a:boolean) {
         this.a = a
@@ -13,13 +13,13 @@ class First {
     }
 
     fun fun1() : int {
-        d: int = 10
+        var d: int = 10
         a = d
         return a
     }
 
     public fun fun2() {
-        d: int = 10
+        var d: int = 10
         read(d)
         print(d)
     }
@@ -48,18 +48,18 @@ class Second: First {
 
 
     fun boolParse() {
-        res: boolean = true && false || false
+        var res: boolean = true && false || false
     }
 
     fun whileFun() {
-        a: int = 10
+        var a: int = 10
         while (a < 20) {
             a = a + 1
         }
     }
 
     fun ifFun(a: int) {
-        b: boolean = a % 2 == 1
+        var b: boolean = a % 2 == 1
         if (b) {
             print(b)
         } else {
@@ -68,7 +68,17 @@ class Second: First {
     }
 
     fun classCreation() {
-        a: First = new First(false)
-        c: First = new Second()
+        var a: First = new First(false)
+        var c: First = new Second()
     }
+}
+
+
+fun main() {
+    classCreation()
+}
+
+fun classCreation() {
+    var a: First = new First(false)
+    var c: First = new Second()
 }

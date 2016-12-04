@@ -18,12 +18,15 @@ class LocalVariableDeclarationVisitor(val scope: Scope, val typeProvider: TypePr
     override fun visitLocalVariableDeclarationStatement(ctx: ElaginParser.LocalVariableDeclarationStatementContext): VariableDeclaration {
         val name = ctx.identifier().text
         val type = typeProvider.getType(ctx.type())
-        if (type == PrimitiveType.VOID) {
+        if (type == PrimitiveType.VOID && ctx.type() != null) {
             throw CompilationException("Variable '$name' could not have VOID type")
         }
         val expression = ctx.expression().accept(expressionVisitor)
+        if (ctx.type() == null && expression.type == PrimitiveType.VOID) {
+            throw CompilationException("Variable '$name' could not have VOID type")
+        }
         scope.addLocalVariable(LocalVariable(name, type))
-        return VariableDeclaration(name, type, expression)
+        return VariableDeclaration(name, if (ctx.type() == null) expression.type else type, expression)
     }
 
 }

@@ -84,7 +84,7 @@ statement : block
            | expression ;
 
 localVariableDeclarationStatement
-    :  'var' identifier ':' type '=' expression
+    :  'var' identifier (':' type)? '=' expression
     ;
 
 

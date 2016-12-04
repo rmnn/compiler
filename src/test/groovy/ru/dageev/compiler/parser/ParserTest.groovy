@@ -18,7 +18,7 @@ class ParserTest extends GroovyTestCase {
 
     @Test
     void testShouldFailForNotExistingClass() {
-        def source = " class First {  a: NOT_EXISTING_CLASS }"
+        def source = " class First {  var a: NOT_EXISTING_CLASS }"
         expectException(source, "Class NOT_EXISTING_CLASS not exists")
     }
 
@@ -32,8 +32,8 @@ class ParserTest extends GroovyTestCase {
     void testShouldFailForDuplicatedFields() {
         def source = """
         class First {
-            a: int
-            a: int
+            var a: int
+            var a: int
         }
                     """
         expectException(source, "Field 'a' already exists in class 'First'")
@@ -44,8 +44,8 @@ class ParserTest extends GroovyTestCase {
         def source = """
         class First {
             fun function() {
-               a: int = 10
-               a: int = 100
+               var a: int = 10
+               var a: int = 100
             }
         }
                     """
@@ -69,7 +69,7 @@ class ParserTest extends GroovyTestCase {
         def source = """
         class First {
             fun function(a: int, b: int, c:boolean) {
-              value = notExistingFunction(a, b)
+              var value : int = notExistingFunction(a, b)
             }          
         }
                     """
@@ -91,7 +91,7 @@ class ParserTest extends GroovyTestCase {
     @Test
     void testShouldFailForAccessParentPrivateField() {
         def source = """
-        class First { private privateField: int }
+        class First { private var privateField: int }
         class Second: First {
             fun function() {
                this.privateField = 100
@@ -108,7 +108,7 @@ class ParserTest extends GroovyTestCase {
         class First { private fun privateMethod(a:int): int { return a } }
         class Second: First {
             fun function() {
-               a: int = privateMethod(100)
+               var a: int = privateMethod(100)
             }          
         }
                     """
@@ -120,7 +120,7 @@ class ParserTest extends GroovyTestCase {
         def source = """
         class Second {
             fun function() {
-               a: int = notExistingMethod()
+               var a: int = notExistingMethod()
             }          
         }
                     """
@@ -133,8 +133,8 @@ class ParserTest extends GroovyTestCase {
         def source = """
         class First {
             fun function() {
-               a: int = 10
-               b : int = a.primitive
+               var a: int = 10
+               var b : int = a.primitive
             }          
         }
                     """
@@ -147,8 +147,8 @@ class ParserTest extends GroovyTestCase {
         def source = """
         class First {
             fun function() {
-               a: int = 10
-               b : int = a.primitiveMethod()
+               var a: int = 10
+               var b : int = a.primitiveMethod()
             }          
         }
                     """
@@ -160,7 +160,7 @@ class ParserTest extends GroovyTestCase {
         def source = """
         class First {
             fun function() {
-               a: int = notExistingLocalVariable
+               var a: int = notExistingLocalVariable
             }          
         }
                     """
@@ -197,7 +197,7 @@ class ParserTest extends GroovyTestCase {
         def source = """
         class First {
             fun function() {
-                a:void = 100
+                var a:void = 100
             }         
         }
                     """
@@ -209,7 +209,7 @@ class ParserTest extends GroovyTestCase {
         def source = """
         class First {
             fun function(a: int):int { return a }  
-            fun function2() {  b: int = function(true) }    
+            fun function2() { var b: int = function(true) }    
         }
                     """
         expectException(source, "Method 'function[boolean]' not found for class 'First'")
@@ -219,7 +219,7 @@ class ParserTest extends GroovyTestCase {
     void testShouldFailIncorrectConstructorCall() {
         def source = """
         class First {
-            fun function() { a : First = new First(10) }  
+            fun function() {var a : First = new First(10) }  
         }
                     """
         expectException(source, "Could not find matching constructor with arguments [int] for First")
@@ -233,24 +233,10 @@ class ParserTest extends GroovyTestCase {
         }
         
         class Second { 
-            fun function() { a: First = new First() }
+            fun function() {var a: First = new First() }
         }
                     """
         expectException(source, "Could not find matching constructor with arguments [] for First")
-    }
-
-    @Test
-    void testShouldFailForProgramContainsSeveralMainMethods() {
-        def source = """
-        class First {
-           fun main() { }
-        }
-        
-        class Second { 
-            public fun main() : void { }
-        }
-                    """
-        expectException(source, "Found more than 1 main method")
     }
 
     @Test
@@ -281,7 +267,7 @@ class ParserTest extends GroovyTestCase {
     void testShouldFailForNonIntArgumentInArithmeticOperation() {
         def source = """
         class First {
-           fun main() { a: int = 1 + true }
+           fun main() {var a: int = 1 + true }
         }
                     """
         expectException(source, "Incorrect right expression type for operation '+'. Expected 'int', found 'boolean'")
@@ -291,7 +277,7 @@ class ParserTest extends GroovyTestCase {
     void testShouldFailForNonBooleanArgumentInLogicalOperation() {
         def source = """
         class First {
-           fun main() { a: boolean = new First() && true }
+           fun main() {var a: boolean = new First() && true }
         }
                     """
         expectException(source, "Incorrect left expression type for operation '&&'. Expected 'boolean', found 'First'")
