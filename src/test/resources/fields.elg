@@ -2,7 +2,7 @@ class FieldsTest {
 
     var b: int
     constructor() {
-        var b : int = 10
+         this.b = 10
     }
 
     fun print10() {
@@ -12,7 +12,7 @@ class FieldsTest {
 
 class Second {
     fun createFields() {
-          var a:FieldsTest = new FieldsTest()
+          var a = new FieldsTest()
           a.print10()
     }
 }
@@ -24,6 +24,6 @@ fun main() {
 
 
 fun ok() {
-   var a: Second = new Second()
+   var a = new Second()
    a.createFields()
 }

@@ -25,8 +25,9 @@ class LocalVariableDeclarationVisitor(val scope: Scope, val typeProvider: TypePr
         if (ctx.type() == null && expression.type == PrimitiveType.VOID) {
             throw CompilationException("Variable '$name' could not have VOID type")
         }
-        scope.addLocalVariable(LocalVariable(name, type))
-        return VariableDeclaration(name, if (ctx.type() == null) expression.type else type, expression)
+        val variableType = if (ctx.type() == null) expression.type else type
+        scope.addLocalVariable(LocalVariable(name, variableType))
+        return VariableDeclaration(name, variableType, expression)
     }
 
 }

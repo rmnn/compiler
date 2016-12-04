@@ -36,7 +36,7 @@ class CallGenerator(val scope: Scope, val classesContext: ClassesContext, val ex
         generateArguments(methodCall)
         val methodDescriptor = methodCall.methodSignature.getDescriptor()
         val ownerDescriptor = methodCall.owner.type.getInternalName()
-        val invokeCode = if (forMainClass && methodCall.owner.type != ClassType(scope.className)) Opcodes.INVOKESTATIC else Opcodes.INVOKEVIRTUAL
+        val invokeCode = if (methodCall.owner.type == ClassType("ElaginProgram")) Opcodes.INVOKESTATIC else Opcodes.INVOKEVIRTUAL
         methodVisitor.visitMethodInsn(invokeCode, ownerDescriptor, methodCall.methodSignature.name, methodDescriptor, false)
     }
 
