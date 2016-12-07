@@ -43,7 +43,8 @@ class MethodCallExpressionVisitor(scope: Scope, val classesContext: ClassesConte
         val arguments = getArgumentsForCall(ctx.expressionList())
         if (scope.parentClassName == null) throw CompilationException("Could not make super() call for class without parent in class ${scope.className}")
         checkConstructorExists(scope.className, scope, arguments, false)
-        return Call.SuperCall(arguments, ClassType(scope.className))
+        val constructorSignature = getConstructorSignature(scope.className, scope, arguments)
+        return Call.SuperCall(constructorSignature, arguments, ClassType(scope.parentClassName))
     }
 
 
@@ -64,6 +65,25 @@ class MethodCallExpressionVisitor(scope: Scope, val classesContext: ClassesConte
             }
         }
     }
+
+    fun getConstructorSignature(childClass: String, scope: Scope, arguments: List<Argument>): MethodSignature {
+        val constructorCallSignature = scope.getConstructorCallSignature(arguments)
+        return if (constructorCallSignature.isPresent) {
+            if (scope.className != childClass && constructorCallSignature.get().accessModifier == AccessModifier.PRIVATE) {
+                throw  CompilationException("Unable to call parent '${scope.className}' class private constructor")
+            }
+            constructorCallSignature.get()
+
+        } else {
+            if (scope.parentClassName != null) {
+                val parentScope = classesContext.getClassScope(scope.parentClassName)
+                getConstructorSignature(childClass, parentScope, arguments)
+            } else {
+                throw CompilationException("Method 'super${arguments.map { it.type.getTypeName() }}' not found for class '$childClass'")
+            }
+        }
+    }
+
 
     override fun visitConstructorCall(ctx: ElaginParser.ConstructorCallContext): Call {
         val className = ctx.identifier().text

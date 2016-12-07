@@ -2,11 +2,14 @@ package ru.dageev.compiler.bytecodegeneration.method
 
 import org.objectweb.asm.ClassWriter
 import ru.dageev.compiler.bytecodegeneration.statement.StatementGenerator
+import ru.dageev.compiler.domain.AccessModifier
 import ru.dageev.compiler.domain.ClassesContext
 import ru.dageev.compiler.domain.declaration.MethodDeclaration
 import ru.dageev.compiler.domain.node.expression.Call
 import ru.dageev.compiler.domain.node.statement.Block
+import ru.dageev.compiler.domain.scope.MethodSignature
 import ru.dageev.compiler.domain.type.ClassType
+import ru.dageev.compiler.domain.type.PrimitiveType
 
 /**
  * Created by dageev
@@ -23,7 +26,8 @@ class ConstructorGenerator(val classesContext: ClassesContext, val classWriter: 
 
         val generator = StatementGenerator(block.scope, classesContext, methodVisitor)
         if (block.statements.none { it is Call.SuperCall }) {
-            Call.SuperCall(emptyList(), ClassType(parentClass)).accept(generator)
+            val methodSignature = MethodSignature(AccessModifier.PUBLIC, "super", emptyList(), PrimitiveType.VOID)
+            Call.SuperCall(methodSignature, emptyList(), ClassType(parentClass)).accept(generator)
         }
         constructor.statement.accept(generator)
         appendReturnIfNotExists(constructor, block, generator)

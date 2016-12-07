@@ -67,7 +67,7 @@ sealed class BinaryExpression(val leftExpression: Expression, val rightExpressio
 
     }
 
-    class EqualityExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT) {
+    class EqualityExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN) {
         override fun accept(generator: StatementGenerator) {
             generator.generate(this)
         }

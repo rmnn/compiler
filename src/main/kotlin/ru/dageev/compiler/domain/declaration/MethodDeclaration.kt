@@ -22,6 +22,6 @@ open class MethodDeclaration(val methodSignature: MethodSignature, val statement
     }
 
     override fun toString(): String {
-        return "MethodDeclaration(methodSignature=$methodSignature, statement=$statement)"
+        return "MethodDeclaration(constructorSignature=$methodSignature, statement=$statement)"
     }
 }

@@ -25,7 +25,11 @@ classBody
     ;
 
 methodDeclaration
-    :   (accessModifier)? 'fun' identifier formalParameters (':' type)? methodBody
+    :   (accessModifier)? (tailrecModifier)? 'fun' identifier formalParameters (':' type)? methodBody
+    ;
+
+tailrecModifier
+    : 'tailrec'
     ;
 
 constructorDeclaration

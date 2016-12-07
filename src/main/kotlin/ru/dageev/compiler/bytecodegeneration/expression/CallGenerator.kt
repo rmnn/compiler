@@ -43,8 +43,9 @@ class CallGenerator(val scope: Scope, val classesContext: ClassesContext, val ex
     fun generate(superCall: Call.SuperCall) {
         methodVisitor.visitVarInsn(Opcodes.ALOAD, 0)
         generateArguments(superCall)
+        val methodDescriptor = superCall.constructorSignature.getDescriptor()
         val ownerDescriptor = superCall.type.getInternalName()
-        methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, ownerDescriptor, "<init>", "()V", false)
+        methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, ownerDescriptor, "<init>", methodDescriptor, false)
     }
 
     private fun getConstructor(constructorCallExpression: Call.ConstructorCall): Optional<MethodSignature> {
