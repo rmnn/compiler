@@ -10,4 +10,12 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-.idea/**
+/src/test/resources/fields.elg
+.gradle/
+.idea/
+build/
+out/
+src/test/nnJava.txt
+target/
+targetJava/
+test.txt

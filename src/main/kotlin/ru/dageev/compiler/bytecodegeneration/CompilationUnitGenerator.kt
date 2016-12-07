@@ -12,7 +12,8 @@ import ru.dageev.compiler.domain.declaration.ClassDeclaration
 class CompilationUnitGenerator() {
 
     fun generate(compilationUnit: CompilationUnit): Map<String, ByteArray> {
-        val classesContext = ClassesContext(compilationUnit.classDeclarations.map { it.name to it }.toMap() as MutableMap<String, ClassDeclaration>)
+        val map = compilationUnit.classDeclarations.map { it.name to it }.toMap()
+        val classesContext = ClassesContext(if (map.isEmpty()) mutableMapOf() else map as MutableMap<String, ClassDeclaration>)
         val classGenerator = ClassGenerator(classesContext)
         val mainProgramClass = compilationUnit.mainClassDeclaration.name to classGenerator.generate(compilationUnit.mainClassDeclaration, true)
         return (compilationUnit.classDeclarations.map { it.name to classGenerator.generate(it) } + mainProgramClass).toMap()
