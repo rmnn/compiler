@@ -1,6 +1,6 @@
 package ru.dageev.compiler.bytecodegeneration.expression
 
-import org.objectweb.asm.MethodVisitor
+import jdk.internal.org.objectweb.asm.MethodVisitor
 import ru.dageev.compiler.domain.ClassesContext
 import ru.dageev.compiler.domain.node.expression.*
 import ru.dageev.compiler.domain.scope.Scope

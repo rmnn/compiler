@@ -1,7 +1,7 @@
 package ru.dageev.compiler.bytecodegeneration.statement
 
-import org.objectweb.asm.MethodVisitor
-import org.objectweb.asm.Opcodes
+import jdk.internal.org.objectweb.asm.MethodVisitor
+import jdk.internal.org.objectweb.asm.Opcodes
 import ru.dageev.compiler.bytecodegeneration.expression.ExpressionGenerator
 import ru.dageev.compiler.domain.node.statement.PrintStatement
 import ru.dageev.compiler.domain.type.ClassType

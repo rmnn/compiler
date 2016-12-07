@@ -1,6 +1,6 @@
 package ru.dageev.compiler.bytecodegeneration.expression
 
-import org.objectweb.asm.Opcodes
+import jdk.internal.org.objectweb.asm.Opcodes
 
 /**
  * Created by dageev

@@ -1,7 +1,7 @@
 package ru.dageev.compiler.bytecodegeneration.expression
 
-import org.objectweb.asm.MethodVisitor
-import org.objectweb.asm.Opcodes
+import jdk.internal.org.objectweb.asm.MethodVisitor
+import jdk.internal.org.objectweb.asm.Opcodes
 import ru.dageev.compiler.domain.node.expression.FieldAccess
 import ru.dageev.compiler.domain.node.expression.VariableReference
 import ru.dageev.compiler.domain.scope.Scope

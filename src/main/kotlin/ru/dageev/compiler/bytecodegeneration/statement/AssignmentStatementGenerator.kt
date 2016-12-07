@@ -1,7 +1,7 @@
 package ru.dageev.compiler.bytecodegeneration.statement
 
-import org.objectweb.asm.MethodVisitor
-import org.objectweb.asm.Opcodes
+import jdk.internal.org.objectweb.asm.MethodVisitor
+import jdk.internal.org.objectweb.asm.Opcodes
 import ru.dageev.compiler.bytecodegeneration.expression.ExpressionGenerator
 import ru.dageev.compiler.domain.ClassesContext
 import ru.dageev.compiler.domain.node.statement.Assignment
@@ -19,8 +19,8 @@ class AssignmentStatementGenerator(val scope: Scope, val classesContext: Classes
     fun generate(assignment: Assignment) {
         if (scope.localVariables.containsKey(assignment.varName) && !assignment.classType.isPresent) {
             val index = scope.localVariables.indexOf(assignment.varName)
-            val localVariable = scope.localVariables[assignment.varName]!!
             val type = assignment.expression.type
+            assignment.expression.accept(expressionGenerator)
             methodVisitor.visitVarInsn(type.getStoreVariableOpcode(), index)
             return
         } else {

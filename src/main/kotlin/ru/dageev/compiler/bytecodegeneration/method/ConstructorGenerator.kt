@@ -1,6 +1,6 @@
 package ru.dageev.compiler.bytecodegeneration.method
 
-import org.objectweb.asm.ClassWriter
+import jdk.internal.org.objectweb.asm.ClassWriter
 import ru.dageev.compiler.bytecodegeneration.statement.StatementGenerator
 import ru.dageev.compiler.domain.AccessModifier
 import ru.dageev.compiler.domain.ClassesContext

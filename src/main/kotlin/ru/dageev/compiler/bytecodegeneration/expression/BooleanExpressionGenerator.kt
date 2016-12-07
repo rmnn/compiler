@@ -1,8 +1,8 @@
 package ru.dageev.compiler.bytecodegeneration.expression
 
-import org.objectweb.asm.Label
-import org.objectweb.asm.MethodVisitor
-import org.objectweb.asm.Opcodes
+import jdk.internal.org.objectweb.asm.Label
+import jdk.internal.org.objectweb.asm.MethodVisitor
+import jdk.internal.org.objectweb.asm.Opcodes
 import ru.dageev.compiler.bytecodegeneration.expression.CompareSign.*
 import ru.dageev.compiler.domain.AccessModifier
 import ru.dageev.compiler.domain.node.expression.*

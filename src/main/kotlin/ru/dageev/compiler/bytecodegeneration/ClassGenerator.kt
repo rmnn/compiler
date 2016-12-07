@@ -1,7 +1,7 @@
 package ru.dageev.compiler.bytecodegeneration
 
-import org.objectweb.asm.ClassWriter
-import org.objectweb.asm.Opcodes
+import jdk.internal.org.objectweb.asm.ClassWriter
+import jdk.internal.org.objectweb.asm.Opcodes
 import ru.dageev.compiler.bytecodegeneration.method.ConstructorGenerator
 import ru.dageev.compiler.bytecodegeneration.method.MethodGenerator
 import ru.dageev.compiler.domain.ClassesContext
