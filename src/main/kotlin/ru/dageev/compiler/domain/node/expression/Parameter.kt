@@ -16,4 +16,19 @@ class Parameter(val name: String, type: Type) : Expression(type) {
     override fun accept(generator: ExpressionGenerator) {
         generator.generate(this)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other?.javaClass != javaClass) return false
+
+        other as Parameter
+
+        if (name != other.name) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return name.hashCode()
+    }
 }

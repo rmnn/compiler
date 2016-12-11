@@ -10,6 +10,7 @@ import ru.dageev.compiler.domain.type.PrimitiveType
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
 import ru.dageev.compiler.parser.CompilationException
+import ru.dageev.compiler.parser.helper.TailRecOptimizationHelper
 import ru.dageev.compiler.parser.provider.TypeProvider
 import ru.dageev.compiler.parser.visitor.statement.StatementVisitor
 
@@ -19,13 +20,18 @@ import ru.dageev.compiler.parser.visitor.statement.StatementVisitor
  */
 class MethodVisitor(scope: Scope, val typeProvider: TypeProvider, val classesContext: ClassesContext) : ElaginBaseVisitor<MethodDeclaration>() {
     val scope: Scope
+    val tailRecOptimizationHelper: TailRecOptimizationHelper
+
 
     init {
         this.scope = scope.copy()
+        this.tailRecOptimizationHelper = TailRecOptimizationHelper()
     }
 
     override fun visitMethodDeclaration(ctx: ElaginParser.MethodDeclarationContext): MethodDeclaration {
-        scope.addLocalVariable(LocalVariable("this", ClassType(scope.className)))
+        if (scope.className != "ElaginProgram") {
+            scope.addLocalVariable(LocalVariable("this", ClassType(scope.className)))
+        }
         val signature = ctx.accept(MethodSignatureVisitor(scope, typeProvider, classesContext))
         signature.parameters.forEach { param ->
             scope.addLocalVariable(LocalVariable(param.name, param.type))
@@ -38,24 +44,23 @@ class MethodVisitor(scope: Scope, val typeProvider: TypeProvider, val classesCon
                 throw CompilationException("Method $signature should have return statement at the end")
             }
         }
-        return MethodDeclaration(signature, block)
-    }
+        val methodDeclaration = MethodDeclaration(signature, block)
+        return if (signature.tailrec) {
+            tailRecOptimizationHelper.generate(methodDeclaration)
+        } else methodDeclaration
 
-    private fun containsReturnStatement(block: Block) = !block.statements.isEmpty() && lastStatementContainsReturn(block.statements.last())
+    }
 
 
     private fun lastStatementContainsReturn(statement: Statement): Boolean {
-        if (statement is ReturnStatement) {
-            return true
+        return when (statement) {
+            is ReturnStatement -> true
+            is Block -> containsReturnStatement(statement)
+            is IfStatement -> lastStatementContainsReturn(statement.trueStatement) && statement.elseStatement.map { lastStatementContainsReturn(it) }.orElse(true)
+            is WhileStatement -> lastStatementContainsReturn(statement.body)
+            else -> false
         }
-
-        if (statement is IfStatement) {
-            return containsReturnStatement(statement.trueStatement as Block) && statement.elseStatement.isPresent && containsReturnStatement(statement.elseStatement.get() as Block)
-        }
-
-        if (statement is WhileStatement) {
-            return (statement.body as Block).statements.any { it is ReturnStatement }
-        }
-        return false
     }
+
+    private fun containsReturnStatement(block: Block) = !block.statements.isEmpty() && lastStatementContainsReturn(block.statements.last())
 }

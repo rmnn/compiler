@@ -49,14 +49,14 @@ class BooleanExpressionGenerator(val expressionGenerator: ExpressionGenerator, v
         val arguments = listOf(argument)
         when (compareSign) {
             EQUALS, NOT_EQUALS -> {
-                val equalsSignature = MethodSignature(AccessModifier.PUBLIC, "equals", parameters, PrimitiveType.BOOLEAN)
+                val equalsSignature = MethodSignature(AccessModifier.PUBLIC, false, "equals", parameters, PrimitiveType.BOOLEAN)
                 val equalsCall = Call.MethodCall(equalsSignature, "equals", arguments, left)
                 equalsCall.accept(expressionGenerator)
                 methodVisitor.visitInsn(Opcodes.ICONST_1)
                 methodVisitor.visitInsn(Opcodes.IXOR)
             }
             LESS, GREATER, LESS_EQUALS, GREATER_EQUALS -> {
-                val compareToSignature = MethodSignature(AccessModifier.PUBLIC, "compareTo", parameters, PrimitiveType.INT)
+                val compareToSignature = MethodSignature(AccessModifier.PUBLIC, false, "compareTo", parameters, PrimitiveType.INT)
                 val compareToCall = Call.MethodCall(compareToSignature, "compareTo", arguments, left)
                 compareToCall.accept(expressionGenerator)
             }

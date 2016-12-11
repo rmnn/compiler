@@ -68,8 +68,8 @@ fun getDefaultConstructor(scope: Scope): MethodDeclaration.ConstructorDeclaratio
 }
 
 fun getDefaultConstructorSignature(scope: Scope): MethodSignature {
-    return MethodSignature(AccessModifier.PUBLIC, scope.className, emptyList(), PrimitiveType.VOID)
+    return MethodSignature(AccessModifier.PUBLIC, false, scope.className, emptyList(), PrimitiveType.VOID)
 }
 
 
-fun getMainMethodSignature() = MethodSignature(AccessModifier.PUBLIC, "main", emptyList(), PrimitiveType.VOID)
+fun getMainMethodSignature() = MethodSignature(AccessModifier.PUBLIC, false, "main", emptyList(), PrimitiveType.VOID)

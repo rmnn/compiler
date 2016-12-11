@@ -24,11 +24,12 @@ class MethodSignatureVisitor(scope: Scope, val typeProvider: TypeProvider, val c
 
     override fun visitMethodDeclaration(ctx: ElaginParser.MethodDeclarationContext): MethodSignature {
         val accessModifier = getAccessModifier(ctx.accessModifier())
+        val tailrec = ctx.tailrecModifier() != null
         val functionName = ctx.identifier().text
         val returnType = typeProvider.getType(ctx.type())
         val params = ctx.formalParameters().accept(ParameterListVisitor(typeProvider, ExpressionVisitor(scope, classesContext)))
 
-        return MethodSignature(accessModifier, functionName, params, returnType)
+        return MethodSignature(accessModifier, tailrec, functionName, params, returnType)
     }
 
     override fun visitConstructorDeclaration(ctx: ElaginParser.ConstructorDeclarationContext): MethodSignature {
@@ -36,6 +37,6 @@ class MethodSignatureVisitor(scope: Scope, val typeProvider: TypeProvider, val c
         val functionName = scope.className
         val params = ctx.formalParameters().accept(ParameterListVisitor(typeProvider, ExpressionVisitor(scope, classesContext)))
 
-        return MethodSignature(accessModifier, functionName, params, PrimitiveType.VOID)
+        return MethodSignature(accessModifier, false, functionName, params, PrimitiveType.VOID)
     }
 }

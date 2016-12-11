@@ -301,7 +301,7 @@ class ParserTest extends GroovyTestCase {
         class First {
            fun function():int { 
               if (2 > 3) {
-                return 10;
+                return 10
               } else { 
               }
            }
@@ -346,7 +346,7 @@ class ParserTest extends GroovyTestCase {
         class First {
            fun function():int { 
               while(2 > 3) {  
-                return 10;            
+                return 10        
               }
            }
         }
@@ -402,6 +402,23 @@ class ParserTest extends GroovyTestCase {
         }
                     """
         expectException(source, "Constructor 'First[boolean]' not found for class 'Second'")
+    }
+
+
+    @Test
+    void testShouldFailForTailRecOptimizationWithoutRecCalls() {
+        def source = """
+        tailrec fun hello(): int { return 100 } 
+                    """
+        expectException(source, "Unable to do tailrec optimization for non recursive function 'public hello(): int'")
+    }
+
+    @Test
+    void testShouldFailForTailrecOptimizationWithoutTailRecCalls() {
+        def source = """
+        tailrec fun hello(a : int): int { if (a > 10) return a else return 2 + hello(a + 10) } 
+                    """
+        expectException(source, "Function marked as tailrec but no tailrec call found for 'public hello(int): int'")
     }
 
     private void expectException(String source, String expectedMessage) {

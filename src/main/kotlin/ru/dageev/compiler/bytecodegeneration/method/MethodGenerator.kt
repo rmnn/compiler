@@ -37,7 +37,6 @@ class MethodGenerator(val classesContext: ClassesContext, val classWriter: Class
         methodVisitor.visitEnd()
     }
 
-
     fun getMainMethodDescriptor(): String {
         val parametersDescriptor = "([Ljava/lang/String;)"
         return parametersDescriptor + PrimitiveType.VOID.getDescriptor()

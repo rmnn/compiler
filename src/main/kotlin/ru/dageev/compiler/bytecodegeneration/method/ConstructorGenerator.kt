@@ -26,7 +26,7 @@ class ConstructorGenerator(val classesContext: ClassesContext, val classWriter: 
 
         val generator = StatementGenerator(block.scope, classesContext, methodVisitor)
         if (block.statements.none { it is Call.SuperCall }) {
-            val methodSignature = MethodSignature(AccessModifier.PUBLIC, "super", emptyList(), PrimitiveType.VOID)
+            val methodSignature = MethodSignature(AccessModifier.PUBLIC, false, "super", emptyList(), PrimitiveType.VOID)
             Call.SuperCall(methodSignature, emptyList(), ClassType(parentClass)).accept(generator)
         }
         constructor.statement.accept(generator)

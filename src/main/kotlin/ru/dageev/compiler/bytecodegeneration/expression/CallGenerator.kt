@@ -32,7 +32,9 @@ class CallGenerator(val scope: Scope, val classesContext: ClassesContext, val ex
 
 
     fun generate(methodCall: Call.MethodCall) {
-        methodCall.owner.accept(expressionGenerator)
+        if (methodCall.owner.type.getTypeName() != "ElaginProgram") {
+            methodCall.owner.accept(expressionGenerator)
+        }
         generateArguments(methodCall)
         val methodDescriptor = methodCall.methodSignature.getDescriptor()
         val ownerDescriptor = methodCall.owner.type.getInternalName()
