@@ -48,13 +48,11 @@ class CompilationUnitVisitor : ElaginBaseVisitor<CompilationUnit>() {
 
     private fun getMethods(classesContext: ClassesContext, ctx: ElaginParser.CompilationUnitContext, scope: Scope, typeProvider: TypeProvider): List<MethodDeclaration> {
         return if (ctx.methodDeclaration() != null) {
-            val methodSignatureVisitor = MethodSignatureVisitor(scope, typeProvider, classesContext)
-            ctx.methodDeclaration().map { method -> method.accept(methodSignatureVisitor) }.forEach {
+            ctx.methodDeclaration().map { method -> method.accept(MethodSignatureVisitor(scope, typeProvider, classesContext)) }.forEach {
                 scope.addSignature(it)
             }
 
-            val methodVisitor = MethodVisitor(scope, typeProvider, classesContext)
-            ctx.methodDeclaration().map { method -> method.accept(methodVisitor) }
+            ctx.methodDeclaration().map { method -> method.accept(MethodVisitor(scope, typeProvider, classesContext)) }
         } else {
             emptyList()
         }

@@ -408,17 +408,14 @@ class ParserTest extends GroovyTestCase {
     @Test
     void testShouldFailForTailRecOptimizationWithoutRecCalls() {
         def source = """
-        tailrec fun hello(): int { return 100 } 
-                    """
-        expectException(source, "Unable to do tailrec optimization for non recursive function 'public hello(): int'")
-    }
-
-    @Test
-    void testShouldFailForTailrecOptimizationWithoutTailRecCalls() {
-        def source = """
-        tailrec fun hello(a : int): int { if (a > 10) return a else return 2 + hello(a + 10) } 
-                    """
-        expectException(source, "Function marked as tailrec but no tailrec call found for 'public hello(int): int'")
+            fun method(n:int) : int { return n } 
+            
+            tailrec fun hello(n: int) : int {
+                if (n == 1) return 1
+                else return n * method(n - 1)
+            }           
+             """
+        expectException(source, "Unable to do tailrec optimization for non recursive function 'public hello(int): int'")
     }
 
     private void expectException(String source, String expectedMessage) {

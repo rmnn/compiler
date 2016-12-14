@@ -72,6 +72,5 @@ data class Scope(val className: String, val parentClassName: String?,
         }
     }
 
-    fun copy(): Scope = Scope(className, parentClassName, ArrayList(constructorSignatures), ArrayList(methodSignatures), LinkedMap(localVariables), HashMap(fields))
-
+    fun copy(): Scope = Scope(className, parentClassName, ArrayList(constructorSignatures), ArrayList(methodSignatures), localVariables.clone(), HashMap(fields))
 }

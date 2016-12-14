@@ -11,8 +11,14 @@ import ru.dageev.compiler.domain.type.Type
  */
 sealed class BinaryExpression(val leftExpression: Expression, val rightExpression: Expression, type: Type) : Expression(type) {
 
+    abstract fun copy(leftExpression: Expression, rightExpression: Expression): BinaryExpression
+
 
     class AdditionalExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT) {
+        override fun copy(leftExpression: Expression, rightExpression: Expression): BinaryExpression {
+            return AdditionalExpression(leftExpression, rightExpression)
+        }
+
         override fun accept(generator: StatementGenerator) {
             generator.generate(this)
         }
@@ -30,6 +36,10 @@ sealed class BinaryExpression(val leftExpression: Expression, val rightExpressio
         override fun accept(generator: ExpressionGenerator) {
             generator.generate(this)
         }
+
+        override fun copy(leftExpression: Expression, rightExpression: Expression): BinaryExpression {
+            return DivisionalExpression(leftExpression, rightExpression)
+        }
     }
 
     class ModuleExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT) {
@@ -39,6 +49,10 @@ sealed class BinaryExpression(val leftExpression: Expression, val rightExpressio
         }
         override fun accept(generator: ExpressionGenerator) {
             generator.generate(this)
+        }
+
+        override fun copy(leftExpression: Expression, rightExpression: Expression): BinaryExpression {
+            return ModuleExpression(leftExpression, rightExpression)
         }
 
     }
@@ -53,6 +67,9 @@ sealed class BinaryExpression(val leftExpression: Expression, val rightExpressio
             generator.generate(this)
         }
 
+        override fun copy(leftExpression: Expression, rightExpression: Expression): BinaryExpression {
+            return MultiplicationExpression(leftExpression, rightExpression)
+        }
     }
 
     class SubtractionExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.INT) {
@@ -65,6 +82,9 @@ sealed class BinaryExpression(val leftExpression: Expression, val rightExpressio
             generator.generate(this)
         }
 
+        override fun copy(leftExpression: Expression, rightExpression: Expression): BinaryExpression {
+            return SubtractionExpression(leftExpression, rightExpression)
+        }
     }
 
     class EqualityExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN) {
@@ -74,6 +94,10 @@ sealed class BinaryExpression(val leftExpression: Expression, val rightExpressio
 
         override fun accept(generator: ExpressionGenerator) {
             generator.generate(this)
+        }
+
+        override fun copy(leftExpression: Expression, rightExpression: Expression): BinaryExpression {
+            return EqualityExpression(leftExpression, rightExpression)
         }
     }
 
@@ -85,6 +109,10 @@ sealed class BinaryExpression(val leftExpression: Expression, val rightExpressio
         override fun accept(generator: ExpressionGenerator) {
             generator.generate(this)
         }
+
+        override fun copy(leftExpression: Expression, rightExpression: Expression): BinaryExpression {
+            return GreaterExpression(leftExpression, rightExpression)
+        }
     }
 
     class GreaterEqualsExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN) {
@@ -94,6 +122,10 @@ sealed class BinaryExpression(val leftExpression: Expression, val rightExpressio
 
         override fun accept(generator: ExpressionGenerator) {
             generator.generate(this)
+        }
+
+        override fun copy(leftExpression: Expression, rightExpression: Expression): BinaryExpression {
+            return GreaterEqualsExpression(leftExpression, rightExpression)
         }
     }
 
@@ -105,6 +137,10 @@ sealed class BinaryExpression(val leftExpression: Expression, val rightExpressio
         override fun accept(generator: ExpressionGenerator) {
             generator.generate(this)
         }
+
+        override fun copy(leftExpression: Expression, rightExpression: Expression): BinaryExpression {
+            return LessEqualsExpression(leftExpression, rightExpression)
+        }
     }
 
     class LogicalOrExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN) {
@@ -114,6 +150,10 @@ sealed class BinaryExpression(val leftExpression: Expression, val rightExpressio
 
         override fun accept(generator: ExpressionGenerator) {
             generator.generate(this)
+        }
+
+        override fun copy(leftExpression: Expression, rightExpression: Expression): BinaryExpression {
+            return LogicalOrExpression(leftExpression, rightExpression)
         }
     }
 
@@ -125,6 +165,10 @@ sealed class BinaryExpression(val leftExpression: Expression, val rightExpressio
         override fun accept(generator: ExpressionGenerator) {
             generator.generate(this)
         }
+
+        override fun copy(leftExpression: Expression, rightExpression: Expression): BinaryExpression {
+            return LogicalAndExpression(leftExpression, rightExpression)
+        }
     }
 
     class NonEqualityExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN) {
@@ -135,6 +179,10 @@ sealed class BinaryExpression(val leftExpression: Expression, val rightExpressio
         override fun accept(generator: ExpressionGenerator) {
             generator.generate(this)
         }
+
+        override fun copy(leftExpression: Expression, rightExpression: Expression): BinaryExpression {
+            return NonEqualityExpression(leftExpression, rightExpression)
+        }
     }
 
     class LessExpression(leftExpression: Expression, rightExpression: Expression) : BinaryExpression(leftExpression, rightExpression, PrimitiveType.BOOLEAN) {
@@ -144,6 +192,10 @@ sealed class BinaryExpression(val leftExpression: Expression, val rightExpressio
 
         override fun accept(generator: ExpressionGenerator) {
             generator.generate(this)
+        }
+
+        override fun copy(leftExpression: Expression, rightExpression: Expression): BinaryExpression {
+            return LessExpression(leftExpression, rightExpression)
         }
     }
 

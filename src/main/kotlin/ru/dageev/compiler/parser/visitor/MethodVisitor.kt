@@ -10,7 +10,7 @@ import ru.dageev.compiler.domain.type.PrimitiveType
 import ru.dageev.compiler.grammar.ElaginBaseVisitor
 import ru.dageev.compiler.grammar.ElaginParser
 import ru.dageev.compiler.parser.CompilationException
-import ru.dageev.compiler.parser.helper.TailRecOptimizationHelper
+import ru.dageev.compiler.parser.helper.TailRecOptimizer
 import ru.dageev.compiler.parser.provider.TypeProvider
 import ru.dageev.compiler.parser.visitor.statement.StatementVisitor
 
@@ -20,12 +20,12 @@ import ru.dageev.compiler.parser.visitor.statement.StatementVisitor
  */
 class MethodVisitor(scope: Scope, val typeProvider: TypeProvider, val classesContext: ClassesContext) : ElaginBaseVisitor<MethodDeclaration>() {
     val scope: Scope
-    val tailRecOptimizationHelper: TailRecOptimizationHelper
+    val tailRecOptimizer: TailRecOptimizer
 
 
     init {
         this.scope = scope.copy()
-        this.tailRecOptimizationHelper = TailRecOptimizationHelper()
+        this.tailRecOptimizer = TailRecOptimizer()
     }
 
     override fun visitMethodDeclaration(ctx: ElaginParser.MethodDeclarationContext): MethodDeclaration {
@@ -37,6 +37,10 @@ class MethodVisitor(scope: Scope, val typeProvider: TypeProvider, val classesCon
             scope.addLocalVariable(LocalVariable(param.name, param.type))
         }
 
+        if (signature.tailrec) {
+            scope.addLocalVariable(LocalVariable("elaginAccum", signature.returnType))
+        }
+
         val block = ctx.accept(StatementVisitor(scope, typeProvider, classesContext)) as Block
 
         if (signature.returnType != PrimitiveType.VOID) {
@@ -45,9 +49,8 @@ class MethodVisitor(scope: Scope, val typeProvider: TypeProvider, val classesCon
             }
         }
         val methodDeclaration = MethodDeclaration(signature, block)
-        return if (signature.tailrec) {
-            tailRecOptimizationHelper.generate(methodDeclaration)
-        } else methodDeclaration
+        return if (signature.tailrec) tailRecOptimizer.generate(methodDeclaration)
+        else methodDeclaration
 
     }
 

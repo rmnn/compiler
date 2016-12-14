@@ -13,4 +13,8 @@ class Assignment(val classType: Optional<ClassType>, val varName: String, val ex
     override fun accept(generator: StatementGenerator) {
         generator.generate(this)
     }
+
+    override fun toString(): String {
+        return "Assignment(classType=$classType, varName='$varName', expression=$expression)"
+    }
 }
