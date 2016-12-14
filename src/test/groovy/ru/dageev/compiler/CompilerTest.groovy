@@ -35,13 +35,13 @@ class CompilerTest extends GroovyTestCase {
     @Test
     void testTailrecFactorial() {
         def source = """
-        tailrec fun fact(n: int, accum: int) : int {
+        tailrec fun fact(accum: int, n: int) : int {
             if (n == 1) return accum
             else return fact(n * accum, n - 1)
         }
 
         fun main() {
-            print(fact(5, 1))
+            print(fact(1, 5))
         }
             """
         assert "120" == elaginRunner.run(source).first
