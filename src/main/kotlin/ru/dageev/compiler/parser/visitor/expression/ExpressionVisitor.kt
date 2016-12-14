@@ -69,4 +69,8 @@ class ExpressionVisitor(scope: Scope, val classesContext: ClassesContext) : Elag
         return ctx.accept(binaryOperationVisitor)
     }
 
+    override fun visitParenthesis(ctx: ElaginParser.ParenthesisContext): Expression {
+        return ctx.expression().accept(this)
+    }
+
 }

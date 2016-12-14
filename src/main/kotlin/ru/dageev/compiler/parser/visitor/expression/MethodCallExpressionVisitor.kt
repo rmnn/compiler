@@ -42,7 +42,7 @@ class MethodCallExpressionVisitor(scope: Scope, val classesContext: ClassesConte
     override fun visitSuperCall(ctx: ElaginParser.SuperCallContext): Call {
         val arguments = getArgumentsForCall(ctx.expressionList())
         if (scope.parentClassName == null) throw CompilationException("Could not make super() call for class without parent in class ${scope.className}")
-        checkConstructorExists(scope.className, scope, arguments, false)
+        checkConstructorExists(scope.className, scope, arguments, true)
         val constructorSignature = getConstructorSignature(scope.className, scope, arguments)
         return Call.SuperCall(constructorSignature, arguments, ClassType(scope.parentClassName))
     }

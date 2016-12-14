@@ -20,13 +20,6 @@ import java.util.*
 
 
 fun assertCorrectVariableReference(classesContext: ClassesContext, scope: Scope, type: ClassType, fieldName: String): Type {
-    if (scope.className != type.getTypeName()) {
-        val classScope = classesContext.getClassScope(type.getTypeName())
-        if (classScope.getFields()[fieldName]!!.accessModifier == AccessModifier.PUBLIC) {
-            return classScope.getFields()[fieldName]!!.type
-        }
-    }
-
     val (desiredScope, field) = getFieldWithScope(classesContext, scope, type, fieldName, true)
     if (!field.isPresent) {
         throw CompilationException("Field '$fieldName' for '${scope.className}' not exists")

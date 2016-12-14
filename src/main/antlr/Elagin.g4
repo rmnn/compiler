@@ -125,9 +125,9 @@ read
 expression
     :   booleanLiteral #booleanValue
     |   IntegerLiteral #integerValue
-    |   identifier #variableReference
-    |   expression '.' identifier #fieldAccessor
+    |   '(' expression ')' #parenthesis
     |   classRef=expression '.' identifier '(' expressionList? ')' #methodCall
+    |   expression '.' identifier #fieldAccessor
     |   identifier '(' expressionList? ')' #methodCall
     |   'new' identifier '(' expressionList? ')' #constructorCall
     |   expression operation=('*'|'/'| '%') expression #multDivExpression
@@ -135,6 +135,7 @@ expression
     |   expression operation=('<'|'>'|'>='|'<='|'!='|'==') expression #compareExpression
     |   expression operation=('&&'|'||') expression #logicalExpression
     |   'super' '('expressionList? ')' #superCall
+    |   identifier #variableReference
 
     ;
 

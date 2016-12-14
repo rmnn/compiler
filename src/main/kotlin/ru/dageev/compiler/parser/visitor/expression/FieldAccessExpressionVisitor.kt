@@ -28,7 +28,8 @@ class FieldAccessExpressionVisitor(scope: Scope, val classesContext: ClassesCont
             if (expression !is VariableReference) {
                 throw CompilationException("Unable to get field for not variable expression")
             }
-            val fieldType = assertCorrectVariableReference(classesContext, scope, expression.type, name)
+            val contextScope = if (scope.className == expression.type.getTypeName()) scope else classesContext.getClassScope(expression.type.getTypeName())
+            val fieldType = assertCorrectVariableReference(classesContext, contextScope, expression.type, name)
             return FieldAccess(name, fieldType, expression)
         } else {
             throw CompilationException("Unable to access field of primitive types")

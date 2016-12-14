@@ -10,7 +10,7 @@ class ElaginRunner {
     Compiler compiler = new Compiler()
 
 
-    Tuple2<String, String> run(String source) {
+    String run(String source) {
         String path = createElgFile(source)
         String[] args = [path]
         compiler.compile(args)
@@ -21,7 +21,7 @@ class ElaginRunner {
         def proc = "java -cp target ElaginProgram".execute()
         proc.consumeProcessOutput(sout, serr)
         proc.waitForOrKill(1000)
-        return new Tuple2(sout.toString().trim(), serr.toString().trim())
+        return sout.toString().trim() + serr.toString().trim()
 
     }
 
