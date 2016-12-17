@@ -66,7 +66,5 @@ class Compiler {
 
 
 fun main(args: Array<String>) {
-//    Compiler().compile(args)
-    val file = "/home/dageev/workspace/compiler/src/test/resources/fields.elg"
-    Compiler().compile(arrayOf(file))
+    Compiler().compile(args)
 }

@@ -1,5 +1,5 @@
 group 'ru.dageev.compiler'
-version '1.0-SNAPSHOT'
+version '1.0'
 
 buildscript {
     repositories {
@@ -10,7 +10,6 @@ buildscript {
     }
 }
 
-version = 1
 
 apply plugin: 'java'
 apply plugin: 'kotlin'
@@ -19,7 +18,7 @@ apply plugin: 'groovy'
 apply plugin: 'application'
 
 
-mainClassName = "ru.dageev.compiler.Compiler"
+mainClassName = "ru.dageev.compiler.CompilerKt"
 
 repositories {
     mavenCentral()
@@ -44,6 +43,21 @@ generateGrammarSource {
     maxHeapSize = "64m"
     arguments += ["-visitor", "-long-messages"]
     outputDirectory = new File("${project.buildDir}/generated-src/antlr/main/ru/dageev/compiler/grammar".toString())
-
 }
+
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Compiler Jar',
+                'Implementation-Version': version,
+                'Main-Class': 'ru.dageev.compiler.CompilerKt'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+
+compileKotlin.dependsOn generateGrammarSource
+assemble.dependsOn fatJar
 
