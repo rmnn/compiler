@@ -66,24 +66,77 @@ This is simple jvm-based language with classes support
 
 ## Examples
 
+
+
+#### Functions
 ```kotlin
-class Value {
-    private var value: int
-    constructor(value: int) { this.value = value }
-        fun getValue() : int { return value }
+/* 
+ * simple factorial program
+ * with read and some value checks
+*/
+
+
+fun main() {
+    var n: int = 1000
+    read(n)
+    var factorialOfN = fact(n)
+
+    // check factorial is greater than 100
+    if (factorialOfN > 100) {
+        print(factorialOfN)
+    } else {
+        print(-1)
     }
 
-    class SqrPrinter {
-        fun sqr(value: Value) { print(value.getVal() * value.getVal()) }
+    while(factorialOfN < 1000) {
+        n = n + 1
+        factorialOfN = fact(n)
+    }
+
+    print(n)
+}
+
+
+fun fact(n: int) : int {
+    if (n == 1) return 1
+    else return n * fact(n - 1)
+}
+```          
+
+
+
+#### classes
+```kotlin
+class ParentValue { 
+  private var value: int
+  
+  constructor(value: int) { 
+    this.value = value 
+  }
+  
+  fun getValue() : int { return value }
+}
+
+
+class Value : ParentValue {
+    constructor(value: int) { super(value) }
+    
+    fun getSqr() : int { 
+        return getValue() * getValue()
+    }
+}    
+    class Printer {
+        fun printValue(value: Value) {  print(value.getSqr()) }
     }
 
     fun main() {
         var value = new Value(10)
-        var sqrPrinter = new SqrPrinter()
-        sqrPrinter.sqr(value)
+        var sqrPrinter = new Printer()
+        sqrPrinter.printValue(value)
     }
-```          
+``` 
 
+### tailrec functions
 ```kotlin
 tailrec fun fact(n: int) : int {
     if (n == 1) return 1
