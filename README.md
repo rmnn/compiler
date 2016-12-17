@@ -74,25 +74,17 @@ This is simple jvm-based language with classes support
  * simple factorial program
  * with read and some value checks
 */
-
-
 fun main() {
     var n: int = 1000
     read(n)
     var factorialOfN = fact(n)
 
-    // check factorial is greater than 100
-    if (factorialOfN > 100) {
-        print(factorialOfN)
-    } else {
-        print(-1)
+    if (n < 7) {
+        while(factorialOfN < 1000) {
+            n = n + 1
+            factorialOfN = fact(n)
+        }
     }
-
-    while(factorialOfN < 1000) {
-        n = n + 1
-        factorialOfN = fact(n)
-    }
-
     print(n)
 }
 
@@ -105,9 +97,9 @@ fun fact(n: int) : int {
 
 
 
-#### classes
+#### Classes
 ```kotlin
-class ParentValue { 
+class Value { 
   private var value: int
   
   constructor(value: int) { 
@@ -118,22 +110,23 @@ class ParentValue {
 }
 
 
-class Value : ParentValue {
+class ValueWithSqr : Value {
     constructor(value: int) { super(value) }
     
     fun getSqr() : int { 
         return getValue() * getValue()
     }
-}    
-    class Printer {
-        fun printValue(value: Value) {  print(value.getSqr()) }
-    }
+}   
+ 
+class Printer {
+    fun printValue(value: ValueWithSqr) {  print(value.getSqr()) }
+}
 
-    fun main() {
-        var value = new Value(10)
-        var sqrPrinter = new Printer()
-        sqrPrinter.printValue(value)
-    }
+fun main() {
+    var value = new ValueWithSqr(10)
+    var sqrPrinter = new Printer()
+    sqrPrinter.printValue(value)
+}
 ``` 
 
 ### tailrec functions
