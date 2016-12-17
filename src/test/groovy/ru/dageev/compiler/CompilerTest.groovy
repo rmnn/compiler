@@ -93,4 +93,26 @@ class CompilerTest extends GroovyTestCase {
         assert "4" == elaginRunner.run(source)
     }
 
+    @Test
+    void testMethodCallWithComplexObject() {
+        def source = """
+        class Value {
+            private var val: int
+            constructor(val: int) { this.val = val }
+            fun getVal() : int { return val }
+        }
+
+        class SqrPrinter {
+           fun sqr(val: Value) { print(val.getVal() * val.getVal()) }
+        }
+
+        fun main() {
+            var val = new Value(10)
+            var sqrPrinter = new SqrPrinter()
+            sqrPrinter.sqr(val)
+        }
+             """
+        assert "100" == elaginRunner.run(source)
+    }
+
 }
