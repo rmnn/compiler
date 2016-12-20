@@ -1,7 +1,7 @@
 # Welcome to the Elagin Compiler Project
 
 This project is developed during a practical course about compiler development at ITMO University.
-
+[![Build Status](https://travis-ci.org/rmnn/compiler.svg?branch=master)](https://travis-ci.org/rmnn/compiler)
 
 ### Build 
 
